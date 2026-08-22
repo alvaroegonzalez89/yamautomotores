@@ -55,6 +55,7 @@
   .brand span{font-family:'Big Shoulders Display',sans-serif; font-weight:800; font-size:22px; letter-spacing:0.04em;}
   .brand small{display:block; font-family:'Inter',sans-serif; font-size:10px; color:var(--gray); letter-spacing:0.15em; text-transform:uppercase; font-weight:500;}
   .navlinks{display:flex; gap:2px; position:relative;}
+  .nav-right{display:flex; align-items:center; gap:14px;}
   .nav-indicator{
     position:absolute; top:0; height:100%; background:var(--blue);
     border-radius:8px; z-index:0;
@@ -140,12 +141,15 @@
 
   /* ---------- STAT CARDS ---------- */
   .stats{
-    display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
-    gap:16px; margin-bottom:36px;
+    display:grid; grid-template-columns:repeat(5, 1fr);
+    gap:14px; margin-bottom:36px;
   }
+  @media(max-width:980px){ .stats{grid-template-columns:repeat(3, 1fr);} }
+  @media(max-width:640px){ .stats{grid-template-columns:repeat(2, 1fr);} }
+  @media(max-width:420px){ .stats{grid-template-columns:1fr;} }
   .stat-card{
     background:var(--bg-card); border:1px solid var(--off); border-radius:14px;
-    padding:20px 22px; position:relative; overflow:hidden;
+    padding:18px 16px; position:relative; overflow:hidden;
     transition:transform .2s ease, border-color .2s ease;
   }
   .stat-card:hover{transform:translateY(-3px); border-color:var(--gray-dark);}
@@ -156,8 +160,8 @@
   .stat-card.warn::before{background:var(--amber);}
   .stat-card.alert::before{background:var(--red);}
   .stat-label{font-size:12px; color:var(--gray); text-transform:uppercase; letter-spacing:0.1em; font-weight:600;}
-  .stat-value{font-family:'JetBrains Mono',monospace; font-size:34px; font-weight:700; margin-top:6px; letter-spacing:-0.02em;}
-  .stat-value sub{font-size:13px; color:var(--gray); font-family:'Inter',sans-serif; font-weight:500; letter-spacing:0;}
+  .stat-value{font-family:'JetBrains Mono',monospace; font-size:28px; font-weight:700; margin-top:6px; letter-spacing:-0.02em;}
+  .stat-value sub{font-size:12px; color:var(--gray); font-family:'Inter',sans-serif; font-weight:500; letter-spacing:0; display:block; margin-top:2px;}
 
   h2.section-title{font-size:22px; margin-bottom:18px; color:var(--white); display:flex; align-items:center; gap:10px;}
   h2.section-title::before{content:''; width:6px; height:22px; background:var(--blue); display:inline-block; border-radius:2px;}
@@ -389,12 +393,15 @@
       <small>Panel de gestión</small>
     </div>
   </div>
-  <div class="navlinks" id="navlinks">
-    <div class="nav-indicator" id="navIndicator"></div>
-    <button class="nav-btn active" data-target="dashboard">Dashboard</button>
-    <button class="nav-btn" data-target="clientes">Clientes</button>
-    <button class="nav-btn" data-target="cuotas">Cuotas del mes</button>
-    <button class="nav-btn" data-target="vehiculos">Vehículos</button>
+  <div class="nav-right">
+    <div class="navlinks" id="navlinks">
+      <div class="nav-indicator" id="navIndicator"></div>
+      <button class="nav-btn active" data-target="dashboard">Dashboard</button>
+      <button class="nav-btn" data-target="clientes">Clientes</button>
+      <button class="nav-btn" data-target="cuotas">Cuotas del mes</button>
+      <button class="nav-btn" data-target="vehiculos">Vehículos</button>
+    </div>
+    <button class="btn btn-ghost" id="btnLogout" style="display:none;" onclick="cerrarSesion()">Salir</button>
   </div>
 </nav>
 
@@ -500,7 +507,7 @@
 
 </div><!-- /appRoot -->
 
-<footer>Demo de gestión — YAM Automotores · AppSur</footer>
+<footer>YAM Automotores · Sistema de gestión · AppSur</footer>
 
 <div class="toast" id="toast">
   <span class="toast-check"><svg viewBox="0 0 24 24" fill="none" stroke="#0B0D12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
@@ -525,7 +532,14 @@
         <div class="field"><label>Monto de cuota</label><input type="number" id="fc-monto" placeholder="80000" required></div>
         <div class="field"><label>Cantidad de cuotas</label><input type="number" id="fc-cantidad" placeholder="12" required></div>
       </div>
-      <div class="field"><label>Fecha de inicio del plan</label><input type="date" id="fc-fecha" required></div>
+      <div class="modal-row">
+        <div class="field">
+          <label>Fecha de inicio del plan</label>
+          <input type="date" id="fc-fecha" required>
+          <small style="color:var(--gray); font-size:11px; display:block; margin-top:4px;">La fecha original de venta, no la de hoy — de ahí se calculan todos los vencimientos.</small>
+        </div>
+        <div class="field"><label>Cuotas ya pagadas</label><input type="number" id="fc-pagadas" placeholder="0" value="0" min="0"></div>
+      </div>
       <div class="modal-actions">
         <button type="button" class="btn btn-ghost" onclick="cerrarModal('modalCliente')">Cancelar</button>
         <button type="submit" class="btn btn-primary">Guardar cliente</button>
@@ -1107,7 +1121,8 @@ document.getElementById('formCliente').addEventListener('submit', e=>{
   const monto = Number(document.getElementById('fc-monto').value);
   const cantidad = Number(document.getElementById('fc-cantidad').value);
   const fechaInicio = new Date(document.getElementById('fc-fecha').value + 'T00:00:00');
-  const cuotas = generarCuotas(fechaInicio, cantidad, monto, 0);
+  const pagadas = Number(document.getElementById('fc-pagadas').value) || 0;
+  const cuotas = generarCuotas(fechaInicio, cantidad, monto, pagadas);
   const nuevoCliente = {nombre, dni, telefono, vehiculo, patente, cuotas};
 
   if(MODO_DEMO){
@@ -1202,8 +1217,16 @@ document.querySelectorAll('.nav-btn').forEach(btn=>{
 function iniciarApp(){
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('appRoot').classList.add('ready');
+  if(!MODO_DEMO){
+    document.getElementById('btnLogout').style.display = 'inline-block';
+  }
   actualizarTodo();
   moverIndicador(document.querySelector('.nav-btn.active'));
+}
+
+function cerrarSesion(){
+  if(MODO_DEMO) return;
+  firebase.auth().signOut();
 }
 
 let unsubClientes = null, unsubVehiculos = null;
