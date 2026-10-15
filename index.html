@@ -362,6 +362,32 @@
     background:var(--amber); color:#0B0D12; text-align:center; font-size:12px; font-weight:700;
     padding:7px; letter-spacing:0.03em;
   }
+  /* ---------- plan / comprobante / financiación ---------- */
+  .modal-box.wide{max-width:780px;}
+  .plan-head h3{margin-bottom:2px;}
+  .plan-sub{color:var(--gray); font-size:13px; line-height:1.5;}
+  .plan-resumen{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:14px 0;}
+  .plan-resumen div{background:var(--off); border-radius:10px; padding:10px 12px;}
+  .plan-resumen small{display:block; font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--gray); font-weight:700; margin-bottom:2px;}
+  .plan-resumen b{font-family:'JetBrains Mono',monospace; font-size:15px;}
+  .plan-table th, .plan-table td{padding:9px 10px; font-size:13px;}
+  .btn-sm{padding:5px 9px; font-size:12px;}
+  .actions{flex-wrap:wrap;}
+  .badge-fin{display:inline-block; font-size:11px; font-weight:700; padding:2px 9px; border-radius:20px; background:rgba(62,156,255,0.14); color:var(--blue-bright); border:1px solid var(--blue);}
+  .receipt{background:#fff; color:#0B0D12; border-radius:12px; overflow:hidden;}
+  .receipt-head{background:#0B0D12; color:#F5F5F5; padding:14px 16px; display:flex; align-items:center; gap:12px; border-bottom:3px solid var(--blue);}
+  .receipt-head img{width:44px; height:44px; border-radius:50%;}
+  .receipt-head b{font-family:'Big Shoulders Display',sans-serif; font-size:21px; letter-spacing:.03em; text-transform:uppercase; display:block; line-height:1;}
+  .receipt-head small{font-size:10px; letter-spacing:.1em; color:#b4b9c3;}
+  .receipt-body{padding:14px 16px 6px;}
+  .receipt-amount{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; gap:10px;}
+  .receipt-amount .monto{font-family:'JetBrains Mono',monospace; font-size:26px; font-weight:700; letter-spacing:-0.02em;}
+  .receipt-paid{background:var(--blue); color:#fff; font-size:11px; font-weight:700; padding:4px 10px; border-radius:6px;}
+  .receipt-row{display:flex; justify-content:space-between; gap:12px; padding:7px 0; border-top:1px solid #e6e8ec; font-size:13px;}
+  .receipt-row span:first-child{color:#6b7280;}
+  .receipt-row span:last-child{font-weight:600; text-align:right;}
+  .receipt-foot{font-size:10px; color:#6b7280; padding:4px 16px 12px;}
+  @media(max-width:520px){ .plan-resumen{grid-template-columns:1fr;} }
 </style>
 </head>
 <body>
@@ -440,7 +466,14 @@
   <section id="clientes">
     <div class="section-header">
       <h2 class="section-title">Clientes y planes de pago</h2>
-      <button class="btn btn-primary" onclick="abrirModal('modalCliente')">+ Agregar cliente</button>
+      <button class="btn btn-primary" onclick="abrirNuevoCliente()">+ Agregar cliente</button>
+    </div>
+    <div class="filtros">
+      <div>
+        <label>Financiación</label>
+        <select id="filtroFinanciacion"></select>
+      </div>
+      <span class="filtro-resultados" id="filtroResultadosClientes"></span>
     </div>
     <div class="clients" id="clientsList"></div>
   </section>
@@ -514,35 +547,49 @@
   <span class="toast-msg" id="toastMsg"></span>
 </div>
 
-<!-- ============ MODAL: NUEVO CLIENTE ============ -->
+<!-- ============ MODAL: CLIENTE (alta y edición) ============ -->
 <div class="modal-overlay" id="modalCliente">
   <div class="modal-box">
-    <h3>Nuevo cliente</h3>
+    <h3 id="fc-titulo">Nuevo cliente</h3>
     <form id="formCliente">
       <div class="field"><label>Nombre y apellido</label><input type="text" id="fc-nombre" required></div>
       <div class="modal-row">
         <div class="field"><label>DNI</label><input type="text" id="fc-dni" required></div>
-        <div class="field"><label>Teléfono</label><input type="text" id="fc-telefono" placeholder="+54 9 260..." required></div>
+        <div class="field"><label>Teléfono (WhatsApp)</label><input type="text" id="fc-telefono" placeholder="+54 9 260..." required></div>
       </div>
       <div class="modal-row">
         <div class="field"><label>Vehículo</label><input type="text" id="fc-vehiculo" placeholder="Ej: Toyota Corolla 2020" required></div>
         <div class="field"><label>Patente</label><input type="text" id="fc-patente" placeholder="AC 145 XY"></div>
       </div>
+      <div class="field"><label>Financiación</label><select id="fc-financiacion" required></select></div>
+
+      <div class="field" id="fc-regenerar-wrap" style="display:none; background:var(--off); border-radius:10px; padding:10px 12px;">
+        <label style="display:flex; gap:8px; align-items:center; text-transform:none; letter-spacing:0; font-size:13px; color:var(--white); margin:0; cursor:pointer;">
+          <input type="checkbox" id="fc-regenerar" style="width:auto;"> Modificar el plan de cuotas
+        </label>
+        <small style="color:var(--gray); font-size:11px; display:block; margin-top:4px;">Recalcula todas las cuotas con los datos de abajo. Las primeras “cuotas ya pagadas” quedan como pagadas y el resto se calcula según la fecha de hoy.</small>
+      </div>
+
       <div class="modal-row">
         <div class="field"><label>Monto de cuota</label><input type="number" id="fc-monto" placeholder="80000" required></div>
         <div class="field"><label>Cantidad de cuotas</label><input type="number" id="fc-cantidad" placeholder="12" required></div>
       </div>
       <div class="modal-row">
         <div class="field">
-          <label>Fecha de inicio del plan</label>
+          <label>Fecha de la primera cuota</label>
           <input type="date" id="fc-fecha" required>
-          <small style="color:var(--gray); font-size:11px; display:block; margin-top:4px;">La fecha original de venta, no la de hoy — de ahí se calculan todos los vencimientos.</small>
+          <small style="color:var(--gray); font-size:11px; display:block; margin-top:4px;">Vencimiento de la cuota 1 (si empezó a pagar en agosto, la de agosto). Cada cuota siguiente vence un mes después.</small>
         </div>
-        <div class="field"><label>Cuotas ya pagadas</label><input type="number" id="fc-pagadas" placeholder="0" value="0" min="0"></div>
+        <div class="field">
+          <label>Cuotas ya pagadas</label>
+          <input type="number" id="fc-pagadas" placeholder="0" value="0" min="0">
+          <small style="color:var(--gray); font-size:11px; display:block; margin-top:4px;">Ej: pagó 14 → la 15 queda pendiente, aunque ya haya vencido.</small>
+        </div>
       </div>
-      <div class="modal-actions">
+      <div class="modal-actions" style="flex-wrap:wrap;">
+        <button type="button" class="btn btn-ghost" id="fc-eliminar" style="display:none; margin-right:auto; color:var(--red);" onclick="eliminarClienteActual()">Eliminar cliente</button>
         <button type="button" class="btn btn-ghost" onclick="cerrarModal('modalCliente')">Cancelar</button>
-        <button type="submit" class="btn btn-primary">Guardar cliente</button>
+        <button type="submit" class="btn btn-primary" id="fc-guardar">Guardar cliente</button>
       </div>
     </form>
   </div>
@@ -582,6 +629,39 @@
   </div>
 </div>
 
+<!-- ============ MODAL: DETALLE DEL PLAN ============ -->
+<div class="modal-overlay" id="modalPlan">
+  <div class="modal-box wide">
+    <div class="plan-head">
+      <div><h3 id="plan-nombre"></h3><div class="plan-sub" id="plan-sub"></div></div>
+    </div>
+    <div class="plan-resumen" id="plan-resumen"></div>
+    <div class="table-scroll">
+      <table class="plan-table">
+        <thead><tr><th>N°</th><th>Vence</th><th>Monto</th><th>Estado</th><th>Pagada el</th><th>Acciones</th></tr></thead>
+        <tbody id="plan-body"></tbody>
+      </table>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost" onclick="editarDesdePlan()">Editar</button>
+      <button type="button" class="btn btn-primary" onclick="cerrarModal('modalPlan')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: COMPROBANTE DE PAGO ============ -->
+<div class="modal-overlay" id="modalComprobante">
+  <div class="modal-box">
+    <h3>Comprobante de pago</h3>
+    <div id="comp-preview"></div>
+    <div class="modal-actions" style="flex-wrap:wrap;">
+      <button type="button" class="btn btn-ghost" onclick="cerrarModal('modalComprobante')">Cerrar</button>
+      <button type="button" class="btn btn-ghost" onclick="descargarComprobante()">Descargar PDF</button>
+      <button type="button" class="btn btn-primary" onclick="enviarComprobanteWa()">Enviar por WhatsApp</button>
+    </div>
+  </div>
+</div>
+
 <!-- ============ MODAL: RECORDATORIO WHATSAPP ============ -->
 <div class="modal-overlay" id="modalRecordatorio">
   <div class="modal-box">
@@ -594,9 +674,10 @@
       <label>Mensaje</label>
       <textarea id="rec-texto" rows="6" style="width:100%; background:var(--off); border:1px solid var(--gray-dark); color:var(--white); border-radius:8px; padding:10px 12px; font-family:'Inter',sans-serif; font-size:13px; resize:vertical;"></textarea>
     </div>
-    <div class="modal-actions">
+    <div class="modal-actions" style="flex-wrap:wrap;">
       <button type="button" class="btn btn-ghost" onclick="cerrarModal('modalRecordatorio')">Cerrar</button>
-      <button type="button" class="btn btn-primary" onclick="copiarMensaje()">Copiar mensaje</button>
+      <button type="button" class="btn btn-ghost" onclick="copiarMensaje()">Copiar</button>
+      <button type="button" class="btn btn-primary" onclick="enviarRecordatorioWa()">Abrir WhatsApp</button>
     </div>
   </div>
 </div>
@@ -604,7 +685,9 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
+
 /* ============================================================
    CONFIGURACIÓN DE FIREBASE
    Este sistema vive en el proyecto compartido appsur-2ffb3 (mismo
@@ -637,21 +720,75 @@ if(!MODO_DEMO){
   db = firebase.firestore();
 }
 
-const HOY = MODO_DEMO ? new Date('2026-07-13') : new Date();
+const HOY = MODO_DEMO ? fechaISO('2026-07-13') : inicioDia(new Date());
 
+const FINANCIACIONES = ['Juan','Yago','Dardo'];
+
+function esc(s){
+  return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/*PURE_START*/
+function inicioDia(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+function fechaISO(s){ const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); }
 function fechaStr(d){
   return d.toLocaleDateString('es-AR', {day:'2-digit', month:'short', year:'numeric'});
 }
+function fmtMonto(n){
+  return '$' + Number(n||0).toLocaleString('es-AR');
+}
+// Suma meses respetando el día (31 de enero + 1 mes = 28/29 de febrero, sin desbordar a marzo)
 function sumarMeses(fecha, meses){
-  const f = new Date(fecha);
-  f.setMonth(f.getMonth()+meses);
-  return f;
+  const dia = fecha.getDate();
+  const r = new Date(fecha.getFullYear(), fecha.getMonth()+meses, 1);
+  const ult = new Date(r.getFullYear(), r.getMonth()+1, 0).getDate();
+  r.setDate(Math.min(dia, ult));
+  return r;
 }
 function diasHasta(fecha){
-  return Math.round((fecha - HOY) / 86400000);
+  return Math.round((inicioDia(fecha) - HOY) / 86400000);
+}
+// El estado "vencida/pendiente" se calcula siempre contra la fecha de hoy (nunca queda congelado en la base)
+function estadoEfectivo(q){
+  if(q.estado==='pagada') return 'pagada';
+  return q.vence < HOY ? 'vencida' : 'pendiente';
+}
+// La cuota 1 vence en la fecha indicada; las demás, un mes después cada una.
+// Las primeras `pagadas` cuotas quedan como pagadas; el resto se calcula contra hoy.
+function generarCuotas(primeraFecha, cantidad, monto, pagadas){
+  const cuotas = [];
+  for(let i=1;i<=cantidad;i++){
+    const q = {
+      numero:i, monto,
+      vence: sumarMeses(primeraFecha, i-1),
+      estado: i<=pagadas ? 'pagada' : 'pendiente',
+      fechaPago: null
+    };
+    q.estado = estadoEfectivo(q);
+    cuotas.push(q);
+  }
+  return cuotas;
 }
 
-/* ---------- mensajes de recordatorio (dos plantillas distintas) ---------- */
+// Normaliza un teléfono argentino para wa.me (formato 549 + área + número, sin 0 ni 15)
+function telefonoWa(tel){
+  let d = String(tel||'').replace(/\D/g,'');
+  if(d.startsWith('00')) d = d.slice(2);
+  if(d.startsWith('0')) d = d.slice(1);
+  if(d.startsWith('54')){
+    if(d.length===12) d = '549' + d.slice(2);
+    return d;
+  }
+  if(d.length===12){
+    if(d.startsWith('11') && d.substr(2,2)==='15') d = d.slice(0,2) + d.slice(4);
+    else if(d.substr(3,2)==='15') d = d.slice(0,3) + d.slice(5);
+    else if(d.substr(4,2)==='15') d = d.slice(0,4) + d.slice(6);
+  }
+  if(d.length===10) return '549' + d;
+  return d;
+}
+
+/* ---------- mensajes de WhatsApp (recordatorio próxima / vencida / comprobante) ---------- */
 function mensajeProximaVencer(cliente, cuota){
   const dias = diasHasta(cuota.vence);
   const cuando = dias<=0 ? 'hoy' : `en ${dias} día${dias===1?'':'s'}`;
@@ -664,37 +801,243 @@ function mensajeVencida(cliente, cuota){
 function armarMensaje(cliente, cuota){
   return cuota.estado==='vencida' ? mensajeVencida(cliente, cuota) : mensajeProximaVencer(cliente, cuota);
 }
+function mensajeComprobante(cliente, cuota){
+  const total = cliente.cuotas.length;
+  const cuando = cuota.fechaPago ? `, abonada el ${fechaStr(cuota.fechaPago)}` : '';
+  return `Hola ${cliente.nombre}! Te enviamos el comprobante de pago de la cuota N°${cuota.numero} de ${total} de tu ${cliente.vehiculo} (${fmtMonto(cuota.monto)})${cuando}. ¡Gracias! — YAM Automotores`;
+}
 
+/* ---------- comprobante de pago ---------- */
+function datosComprobante(cliente, cuota){
+  const total = cliente.cuotas.length;
+  const pagadas = cliente.cuotas.filter(q=>q.estado==='pagada').length;
+  return {
+    cliente: cliente.nombre, dni: cliente.dni || '-',
+    vehiculo: cliente.vehiculo, patente: cliente.patente || '-',
+    numero: cuota.numero, total, monto: fmtMonto(cuota.monto),
+    vence: fechaStr(cuota.vence),
+    fechaPago: cuota.fechaPago ? fechaStr(cuota.fechaPago) : 'No registrada',
+    pagadas, restantes: total - pagadas
+  };
+}
+
+function construirPdfComprobante(JsPDF, d, logo){
+  const doc = new JsPDF({unit:'mm', format:[148,210]});
+  const W = 148, M = 12;
+  const limpio = s => String(s==null?'':s).replace(/[—–]/g,'-');
+
+  doc.setFillColor(11,13,18); doc.rect(0,0,W,40,'F');
+  doc.setFillColor(30,111,217); doc.rect(0,40,W,2,'F');
+  let tx = M;
+  if(logo){ doc.addImage(logo,'JPEG',M,8,24,24); tx = M + 30; }
+  doc.setTextColor(245,245,245); doc.setFont('helvetica','bold'); doc.setFontSize(19);
+  doc.text('YAM AUTOMOTORES', tx, 20);
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(180,185,195);
+  doc.text('COMPROBANTE DE PAGO', tx, 27);
+
+  let y = 58;
+  doc.setTextColor(11,13,18); doc.setFont('helvetica','bold'); doc.setFontSize(12);
+  doc.text(`CUOTA N° ${d.numero} DE ${d.total}`, M, y);
+  doc.setFillColor(30,111,217); doc.roundedRect(W-M-24, y-6, 24, 8.5, 2, 2, 'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(9);
+  doc.text('PAGADA', W-M-12, y-0.4, {align:'center'});
+
+  y += 14;
+  doc.setTextColor(11,13,18); doc.setFontSize(26);
+  doc.text(limpio(d.monto), M, y);
+  y += 8;
+
+  const filas = [
+    ['Cliente', d.cliente], ['DNI', d.dni], ['Vehículo', d.vehiculo], ['Patente', d.patente],
+    ['Fecha de pago', d.fechaPago], ['Vencimiento', d.vence],
+    ['Cuotas pagadas', `${d.pagadas} de ${d.total}`], ['Cuotas restantes', String(d.restantes)]
+  ];
+  doc.setFontSize(10);
+  filas.forEach(([k,v])=>{
+    doc.setDrawColor(225,228,233); doc.line(M, y, W-M, y);
+    y += 6;
+    doc.setFont('helvetica','normal'); doc.setTextColor(107,114,128); doc.text(k, M, y);
+    doc.setFont('helvetica','bold'); doc.setTextColor(11,13,18);
+    const lineas = doc.splitTextToSize(limpio(v), W-M-58);
+    doc.text(lineas, 58, y);
+    y += 4 + (lineas.length-1)*4.5;
+  });
+  doc.setDrawColor(225,228,233); doc.line(M, y, W-M, y);
+
+  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(107,114,128);
+  doc.text('Documento no válido como factura. Conservá este comprobante.', M, 196);
+  doc.text('¡Gracias por tu pago!', M, 201);
+  return doc;
+}
+/*PURE_END*/
+
+/* ---------- helpers de estado ---------- */
+let _seq = 0;
+function nuevoIdLocal(){ _seq++; return 'local-' + _seq; }
+function clienteById(id){ return clientes.find(c=>c.id===id); }
+function ordenarClientes(){ clientes.sort((a,b)=>String(a.nombre).localeCompare(String(b.nombre),'es')); }
+function toInputDate(d){
+  const p = n => String(n).padStart(2,'0');
+  return d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate());
+}
+function slug(s){
+  return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-|-$/g,'');
+}
+
+// Firestore guarda 'pagada' o 'pendiente'; "vencida" se calcula siempre contra la fecha de hoy
+function cuotasAFirestore(cuotas){
+  return cuotas.map(q=>({
+    numero: q.numero, monto: q.monto,
+    estado: q.estado==='pagada' ? 'pagada' : 'pendiente',
+    vence: firebase.firestore.Timestamp.fromDate(q.vence),
+    fechaPago: q.fechaPago ? firebase.firestore.Timestamp.fromDate(q.fechaPago) : null
+  }));
+}
+function cuotasDesdeFirestore(arr){
+  return (arr||[]).map(q=>{
+    const venceRaw = q.vence && q.vence.toDate ? q.vence.toDate() : new Date(q.vence);
+    const o = {
+      numero: q.numero, monto: q.monto,
+      vence: inicioDia(venceRaw),
+      estado: q.estado==='pagada' ? 'pagada' : 'pendiente',
+      fechaPago: q.fechaPago ? (q.fechaPago.toDate ? q.fechaPago.toDate() : new Date(q.fechaPago)) : null
+    };
+    o.estado = estadoEfectivo(o);
+    return o;
+  }).sort((a,b)=>a.numero-b.numero);
+}
+
+/* ---------- recordatorio por WhatsApp ---------- */
+let recActual = null;
+function abrirWa(telefono, texto){
+  const num = telefonoWa(telefono);
+  if(!num){ alert('Este cliente no tiene un teléfono válido cargado.'); return; }
+  window.open('https://wa.me/' + num + '?text=' + encodeURIComponent(texto), '_blank');
+}
+function abrirRecordatorioId(clienteId, numero){
+  const c = clienteById(clienteId);
+  const q = c && c.cuotas.find(x=>x.numero===numero);
+  if(!q) return;
+  abrirRecordatorio(c, q);
+}
 function abrirRecordatorio(cliente, cuota){
+  recActual = {cliente};
   const esVencida = cuota.estado==='vencida';
   document.getElementById('rec-titulo').textContent = esVencida ? 'Recordatorio — cuota vencida' : 'Recordatorio — cuota próxima a vencer';
   document.getElementById('rec-destinatario').value = `${cliente.nombre} · ${cliente.telefono}`;
   document.getElementById('rec-texto').value = armarMensaje(cliente, cuota);
   abrirModal('modalRecordatorio');
 }
+function enviarRecordatorioWa(){
+  if(!recActual) return;
+  abrirWa(recActual.cliente.telefono, document.getElementById('rec-texto').value);
+}
 function copiarMensaje(){
   const ta = document.getElementById('rec-texto');
   ta.select();
-  navigator.clipboard?.writeText(ta.value).then(()=>{
-    mostrarToast('Mensaje copiado al portapapeles');
-  }).catch(()=>{
-    document.execCommand('copy');
-    mostrarToast('Mensaje copiado al portapapeles');
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(ta.value).then(()=>mostrarToast('Mensaje copiado al portapapeles'))
+      .catch(()=>{ document.execCommand('copy'); mostrarToast('Mensaje copiado al portapapeles'); });
+  } else {
+    document.execCommand('copy'); mostrarToast('Mensaje copiado al portapapeles');
+  }
+}
+
+/* ---------- comprobante de pago (PDF + WhatsApp) ---------- */
+let compActual = null;
+let logoChicoCache = null;
+function obtenerLogoChico(){
+  if(logoChicoCache) return Promise.resolve(logoChicoCache);
+  return new Promise(resolve=>{
+    const el = document.querySelector('nav .brand img');
+    if(!el){ resolve(null); return; }
+    const img = new Image();
+    img.onload = ()=>{
+      try{
+        const S = 240;
+        const cv = document.createElement('canvas'); cv.width = S; cv.height = S;
+        const ctx = cv.getContext('2d');
+        ctx.fillStyle = '#0B0D12'; ctx.fillRect(0,0,S,S);
+        ctx.save(); ctx.beginPath(); ctx.arc(S/2,S/2,S/2,0,Math.PI*2); ctx.closePath(); ctx.clip();
+        ctx.drawImage(img,0,0,S,S); ctx.restore();
+        logoChicoCache = cv.toDataURL('image/jpeg', 0.92);
+        resolve(logoChicoCache);
+      }catch(e){ resolve(null); }
+    };
+    img.onerror = ()=>resolve(null);
+    setTimeout(()=>resolve(null), 2000);
+    img.src = el.src;
   });
 }
 
-// Genera el detalle de cuotas de un plan
-function generarCuotas(inicio, cantidad, monto, pagadasHasta){
-  const cuotas = [];
-  for(let i=1;i<=cantidad;i++){
-    const vence = sumarMeses(inicio, i);
-    let estado;
-    if(i <= pagadasHasta) estado = 'pagada';
-    else if(vence < HOY) estado = 'vencida';
-    else estado = 'pendiente';
-    cuotas.push({numero:i, monto, vence, estado});
+async function abrirComprobante(clienteId, numero){
+  const c = clienteById(clienteId);
+  const q = c && c.cuotas.find(x=>x.numero===numero);
+  if(!q) return;
+  const mio = {cliente:c, cuota:q, blob:null, archivo:`Comprobante-YAM-cuota-${q.numero}-${slug(c.nombre)}.pdf`};
+  compActual = mio;
+  const d = datosComprobante(c, q);
+  const logo = await obtenerLogoChico();
+  if(compActual !== mio) return;
+
+  document.getElementById('comp-preview').innerHTML = `
+    <div class="receipt">
+      <div class="receipt-head">
+        ${logo ? `<img src="${logo}" alt="">` : ''}
+        <div><b>YAM Automotores</b><small>COMPROBANTE DE PAGO</small></div>
+      </div>
+      <div class="receipt-body">
+        <div class="receipt-amount">
+          <div><small style="color:#6b7280;">CUOTA N° ${d.numero} DE ${d.total}</small><div class="monto">${esc(d.monto)}</div></div>
+          <span class="receipt-paid">PAGADA</span>
+        </div>
+        <div class="receipt-row"><span>Cliente</span><span>${esc(d.cliente)}</span></div>
+        <div class="receipt-row"><span>DNI</span><span>${esc(d.dni)}</span></div>
+        <div class="receipt-row"><span>Vehículo</span><span>${esc(d.vehiculo)}</span></div>
+        <div class="receipt-row"><span>Patente</span><span>${esc(d.patente)}</span></div>
+        <div class="receipt-row"><span>Fecha de pago</span><span>${esc(d.fechaPago)}</span></div>
+        <div class="receipt-row"><span>Vencimiento</span><span>${esc(d.vence)}</span></div>
+        <div class="receipt-row"><span>Cuotas pagadas</span><span>${d.pagadas} de ${d.total}</span></div>
+        <div class="receipt-row"><span>Cuotas restantes</span><span>${d.restantes}</span></div>
+      </div>
+      <div class="receipt-foot">Documento no válido como factura.</div>
+    </div>`;
+  abrirModal('modalComprobante');
+
+  if(window.jspdf && window.jspdf.jsPDF){
+    try{
+      const doc = construirPdfComprobante(window.jspdf.jsPDF, d, logo);
+      if(compActual === mio) mio.blob = doc.output('blob');
+    }catch(err){ console.error('Error generando el PDF:', err); }
   }
-  return cuotas;
+}
+
+function descargarBlob(blob, nombre){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = nombre;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 4000);
+}
+function descargarComprobante(){
+  if(!compActual) return;
+  if(!compActual.blob){ alert('No se pudo generar el PDF (revisá tu conexión a internet y volvé a intentar).'); return; }
+  descargarBlob(compActual.blob, compActual.archivo);
+}
+async function enviarComprobanteWa(){
+  if(!compActual) return;
+  const {cliente, cuota, blob, archivo} = compActual;
+  const texto = mensajeComprobante(cliente, cuota);
+  if(blob){
+    const file = new File([blob], archivo, {type:'application/pdf'});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      try{ await navigator.share({files:[file], text:texto}); return; }
+      catch(err){ if(err && err.name==='AbortError') return; }
+    }
+    descargarBlob(blob, archivo);
+    mostrarToast('PDF descargado: adjuntalo en el chat de WhatsApp');
+  }
+  abrirWa(cliente.telefono, texto);
 }
 
 function clientesSeedFn(){
@@ -702,52 +1045,48 @@ function clientesSeedFn(){
   {
     nombre:'Juan Pérez', dni:'28.451.902', telefono:'+54 9 260 411 2233',
     vehiculo:'Toyota Corolla 2020', patente:'AC 145 XY',
-    cuotas: generarCuotas(new Date('2026-02-10'), 12, 80000, 5)
+    cuotas: generarCuotas(fechaISO('2026-02-10'), 12, 80000, 5)
   },
   {
     nombre:'María Gómez', dni:'31.220.874', telefono:'+54 9 260 455 8890',
     vehiculo:'Volkswagen Gol 2019', patente:'AB 902 GT',
-    cuotas: generarCuotas(new Date('2025-07-15'), 18, 55000, 12)
+    cuotas: generarCuotas(fechaISO('2025-07-15'), 18, 55000, 12)
   },
   {
     nombre:'Carlos Rodríguez', dni:'25.887.310', telefono:'+54 9 260 433 1120',
     vehiculo:'Ford Ranger 2021', patente:'AD 330 RF',
-    cuotas: generarCuotas(new Date('2026-04-20'), 24, 120000, 2)
+    cuotas: generarCuotas(fechaISO('2026-04-20'), 24, 120000, 2)
   },
   {
     nombre:'Lucía Fernández', dni:'33.109.442', telefono:'+54 9 260 477 6612',
     vehiculo:'Chevrolet Onix 2022', patente:'AE 018 ZK',
-    cuotas: generarCuotas(new Date('2025-06-05'), 12, 70000, 12)
+    cuotas: generarCuotas(fechaISO('2025-06-05'), 12, 70000, 12)
   },
   {
     nombre:'Diego Martínez', dni:'29.774.518', telefono:'+54 9 260 402 9981',
     vehiculo:'Fiat Cronos 2020', patente:'AC 776 LM',
-    cuotas: generarCuotas(new Date('2025-12-13'), 15, 65000, 7)
+    cuotas: generarCuotas(fechaISO('2025-12-13'), 15, 65000, 7)
   },
   {
     nombre:'Sofía Álvarez', dni:'36.005.221', telefono:'+54 9 260 488 3345',
     vehiculo:'Renault Sandero 2018', patente:'AB 511 QP',
-    cuotas: generarCuotas(new Date('2025-09-28'), 10, 50000, 8)
+    cuotas: generarCuotas(fechaISO('2025-09-28'), 10, 50000, 8)
   },
   ];
 }
 let clientes = [];
 
 const vehiculosSeed = [
-  {unidad:'Toyota Corolla 2020', anio:2020, patente:'AC 145 XY', precioCompra:8200000, costos:250000, precioVenta:9800000, estado:'vendido', fechaVenta:new Date('2026-02-10'), cliente:'Juan Pérez'},
-  {unidad:'Volkswagen Gol 2019', anio:2019, patente:'AB 902 GT', precioCompra:5700000, costos:180000, precioVenta:6900000, estado:'vendido', fechaVenta:new Date('2025-07-15'), cliente:'María Gómez'},
-  {unidad:'Ford Ranger 2021', anio:2021, patente:'AD 330 RF', precioCompra:20800000, costos:600000, precioVenta:24500000, estado:'vendido', fechaVenta:new Date('2026-04-20'), cliente:'Carlos Rodríguez'},
-  {unidad:'Chevrolet Onix 2022', anio:2022, patente:'AE 018 ZK', precioCompra:7400000, costos:200000, precioVenta:8900000, estado:'vendido', fechaVenta:new Date('2025-06-05'), cliente:'Lucía Fernández'},
-  {unidad:'Fiat Cronos 2020', anio:2020, patente:'AC 776 LM', precioCompra:6900000, costos:220000, precioVenta:8200000, estado:'vendido', fechaVenta:new Date('2025-12-13'), cliente:'Diego Martínez'},
-  {unidad:'Renault Sandero 2018', anio:2018, patente:'AB 511 QP', precioCompra:4600000, costos:210000, precioVenta:5600000, estado:'vendido', fechaVenta:new Date('2025-09-28'), cliente:'Sofía Álvarez'},
+  {unidad:'Toyota Corolla 2020', anio:2020, patente:'AC 145 XY', precioCompra:8200000, costos:250000, precioVenta:9800000, estado:'vendido', fechaVenta:fechaISO('2026-02-10'), cliente:'Juan Pérez'},
+  {unidad:'Volkswagen Gol 2019', anio:2019, patente:'AB 902 GT', precioCompra:5700000, costos:180000, precioVenta:6900000, estado:'vendido', fechaVenta:fechaISO('2025-07-15'), cliente:'María Gómez'},
+  {unidad:'Ford Ranger 2021', anio:2021, patente:'AD 330 RF', precioCompra:20800000, costos:600000, precioVenta:24500000, estado:'vendido', fechaVenta:fechaISO('2026-04-20'), cliente:'Carlos Rodríguez'},
+  {unidad:'Chevrolet Onix 2022', anio:2022, patente:'AE 018 ZK', precioCompra:7400000, costos:200000, precioVenta:8900000, estado:'vendido', fechaVenta:fechaISO('2025-06-05'), cliente:'Lucía Fernández'},
+  {unidad:'Fiat Cronos 2020', anio:2020, patente:'AC 776 LM', precioCompra:6900000, costos:220000, precioVenta:8200000, estado:'vendido', fechaVenta:fechaISO('2025-12-13'), cliente:'Diego Martínez'},
+  {unidad:'Renault Sandero 2018', anio:2018, patente:'AB 511 QP', precioCompra:4600000, costos:210000, precioVenta:5600000, estado:'vendido', fechaVenta:fechaISO('2025-09-28'), cliente:'Sofía Álvarez'},
   {unidad:'Peugeot 208 2023', anio:2023, patente:'—', precioCompra:9500000, costos:150000, precioVenta:11200000, estado:'disponible', fechaVenta:null, cliente:'—'},
   {unidad:'Nissan Kicks 2022', anio:2022, patente:'—', precioCompra:11300000, costos:180000, precioVenta:13400000, estado:'disponible', fechaVenta:null, cliente:'—'},
 ];
 let vehiculosInventario = [];
-
-function fmtMonto(n){
-  return '$' + n.toLocaleString('es-AR');
-}
 
 function estadoCliente(cuotas){
   if(cuotas.some(c => c.estado === 'vencida')) return 'vencida';
@@ -782,7 +1121,8 @@ function renderStats(){
   clientes.forEach(c=>{
     c.cuotas.forEach(q=>{
       if(q.estado==='vencida') vencidas++;
-      if(q.estado==='pagada' && q.vence.getMonth()===HOY.getMonth() && q.vence.getFullYear()===HOY.getFullYear()){
+      const fCobro = q.fechaPago || q.vence;
+      if(q.estado==='pagada' && fCobro.getMonth()===HOY.getMonth() && fCobro.getFullYear()===HOY.getFullYear()){
         cobradoMes += q.monto;
       }
     });
@@ -822,8 +1162,8 @@ function renderProximos(){
     const dias = diasHasta(p.vence);
     const cuando = p.estado==='vencida' ? `Venció hace ${Math.abs(dias)}d` : (dias===0 ? 'Vence hoy' : `En ${dias}d`);
     return `<tr>
-      <td>${p.cliente}</td>
-      <td>${p.vehiculo}</td>
+      <td>${esc(p.cliente)}</td>
+      <td>${esc(p.vehiculo)}</td>
       <td class="mono">Cuota ${p.numero} — ${fmtMonto(p.monto)}</td>
       <td>${fechaStr(p.vence)} <span style="color:var(--gray)">(${cuando})</span></td>
       <td><span class="estado-dot ${p.estado}">${p.estado==='vencida'?'Vencida':'Pendiente'}</span></td>
@@ -876,7 +1216,21 @@ function initGauges(){
 }
 
 function renderClientes(){
-  document.getElementById('clientsList').innerHTML = clientes.map((c, idx)=>{
+  const filtro = document.getElementById('filtroFinanciacion').value;
+  const lista = clientes.filter(c=>{
+    if(filtro==='todas') return true;
+    if(filtro==='sin') return !c.financiacion;
+    return c.financiacion===filtro;
+  });
+  document.getElementById('filtroResultadosClientes').textContent = `${lista.length} cliente${lista.length===1?'':'s'}`;
+
+  if(lista.length===0){
+    document.getElementById('clientsList').innerHTML =
+      `<div style="text-align:center; color:var(--gray); padding:34px;">No hay clientes que coincidan con el filtro.</div>`;
+    return;
+  }
+
+  document.getElementById('clientsList').innerHTML = lista.map(c=>{
     const pagadas = c.cuotas.filter(q=>q.estado==='pagada').length;
     const total = c.cuotas.length;
     const estado = estadoCliente(c.cuotas);
@@ -889,14 +1243,15 @@ function renderClientes(){
       : 'Plan completado';
 
     const botonRecordar = proxima
-      ? `<button class="btn btn-primary" onclick="abrirRecordatorio(clientes[${idx}], clientes[${idx}].cuotas.find(q=>q.numero===${proxima.numero}))">Recordar por WhatsApp</button>`
+      ? `<button class="btn btn-primary" onclick="abrirRecordatorioId('${c.id}', ${proxima.numero})">Recordar por WhatsApp</button>`
       : '';
+    const fin = c.financiacion ? ` · <span class="badge-fin">${esc(c.financiacion)}</span>` : '';
 
     return `<div class="client-card">
       <div class="client-top">
         <div>
-          <div class="client-name">${c.nombre}</div>
-          <div class="client-vehicle">${c.vehiculo} · <span class="mono">${c.patente}</span></div>
+          <div class="client-name">${esc(c.nombre)}</div>
+          <div class="client-vehicle">${esc(c.vehiculo)} · <span class="mono">${esc(c.patente)}</span>${fin}</div>
         </div>
         <span class="badge ${estado==='completado'?'completado':estado==='vencida'?'vencida':'al-dia'}">${badgeLabel}</span>
       </div>
@@ -913,7 +1268,8 @@ function renderClientes(){
           <span>${proximaTxt}</span>
         </div>
         <div class="actions">
-          <button class="btn btn-ghost" onclick="alert('Acá se abriría el detalle completo del plan de ${c.nombre}')">Ver plan</button>
+          <button class="btn btn-ghost" onclick="abrirPlan('${c.id}')">Ver plan</button>
+          <button class="btn btn-ghost" onclick="abrirEditarCliente('${c.id}')">Editar</button>
           ${botonRecordar}
         </div>
       </div>
@@ -955,9 +1311,9 @@ function renderCuotas(){
   const filtroEstado = document.getElementById('filtroEstado').value;
 
   let todas = [];
-  clientes.forEach((c, idx)=>{
+  clientes.forEach(c=>{
     c.cuotas.forEach(q=>{
-      todas.push({clienteIdx:idx, cliente:c.nombre, vehiculo:c.vehiculo, ...q});
+      todas.push({clienteId:c.id, cliente:c.nombre, vehiculo:c.vehiculo, ...q});
     });
   });
 
@@ -982,16 +1338,16 @@ function renderCuotas(){
   document.getElementById('cuotasBody').innerHTML = todas.map(q=>{
     let accion;
     if(q.estado==='pagada'){
-      accion = '<span style="color:var(--gray)">—</span>';
+      accion = `<button class="btn btn-ghost btn-sm" onclick="abrirComprobante('${q.clienteId}', ${q.numero})">Comprobante</button>`;
     } else {
       accion = `<div style="display:flex; gap:6px; flex-wrap:wrap;">
-        <button class="btn btn-ghost" style="padding:6px 10px; font-size:12px;" onclick="abrirRecordatorio(clientes[${q.clienteIdx}], clientes[${q.clienteIdx}].cuotas.find(c=>c.numero===${q.numero}))">Recordar</button>
-        <button class="btn btn-primary" style="padding:6px 10px; font-size:12px;" onclick="marcarPagada(${q.clienteIdx}, ${q.numero})">Marcar pagada</button>
+        <button class="btn btn-ghost btn-sm" onclick="abrirRecordatorioId('${q.clienteId}', ${q.numero})">Recordar</button>
+        <button class="btn btn-primary btn-sm" onclick="marcarPagada('${q.clienteId}', ${q.numero})">Marcar pagada</button>
       </div>`;
     }
     return `<tr>
-      <td>${q.cliente}</td>
-      <td>${q.vehiculo}</td>
+      <td>${esc(q.cliente)}</td>
+      <td>${esc(q.vehiculo)}</td>
       <td class="cuota-cell">CUOTA ${q.numero} — ${fmtMonto(q.monto)}</td>
       <td>${fechaStr(q.vence)}</td>
       <td><span class="estado-dot ${q.estado}">${q.estado.charAt(0).toUpperCase()+q.estado.slice(1)}</span></td>
@@ -1000,15 +1356,80 @@ function renderCuotas(){
   }).join('');
 }
 
-function marcarPagada(clienteIdx, numeroCuota){
-  const cliente = clientes[clienteIdx];
-  const cuota = cliente.cuotas.find(c=>c.numero===numeroCuota);
+function marcarPagada(clienteId, numeroCuota){
+  const cliente = clienteById(clienteId);
+  const cuota = cliente && cliente.cuotas.find(c=>c.numero===numeroCuota);
   if(!cuota) return;
   cuota.estado = 'pagada';
-  guardarCuotasCliente(clienteIdx);
+  cuota.fechaPago = new Date();
+  guardarCuotasCliente(clienteId);
   actualizarTodo();
   mostrarToast(`Cuota ${numeroCuota} de ${cliente.nombre} marcada como pagada`);
+  abrirComprobante(clienteId, numeroCuota);
 }
+
+function deshacerPago(clienteId, numeroCuota){
+  const cliente = clienteById(clienteId);
+  const cuota = cliente && cliente.cuotas.find(c=>c.numero===numeroCuota);
+  if(!cuota) return;
+  if(!confirm(`¿Deshacer el pago de la cuota ${numeroCuota} de ${cliente.nombre}? Va a volver a figurar como impaga.`)) return;
+  cuota.estado = 'pendiente';
+  cuota.fechaPago = null;
+  cuota.estado = estadoEfectivo(cuota);
+  guardarCuotasCliente(clienteId);
+  actualizarTodo();
+  mostrarToast(`Pago de la cuota ${numeroCuota} deshecho`);
+}
+
+/* ---------- detalle del plan ---------- */
+let planAbiertoId = null;
+function abrirPlan(id){
+  planAbiertoId = id;
+  renderPlan();
+  abrirModal('modalPlan');
+}
+function renderPlan(){
+  if(!planAbiertoId) return;
+  const c = clienteById(planAbiertoId);
+  if(!c){ planAbiertoId = null; cerrarModal('modalPlan'); return; }
+
+  const pagadas = c.cuotas.filter(q=>q.estado==='pagada');
+  const impagas = c.cuotas.filter(q=>q.estado!=='pagada');
+  const montoPagado = pagadas.reduce((a,q)=>a+q.monto,0);
+  const saldo = impagas.reduce((a,q)=>a+q.monto,0);
+  const vencidas = c.cuotas.filter(q=>q.estado==='vencida').length;
+
+  document.getElementById('plan-nombre').textContent = c.nombre;
+  document.getElementById('plan-sub').innerHTML =
+    `${esc(c.vehiculo)} · <span class="mono">${esc(c.patente)}</span><br>DNI ${esc(c.dni)} · ${esc(c.telefono)}` +
+    (c.financiacion ? ` · Financiación: <span class="badge-fin">${esc(c.financiacion)}</span>` : '');
+  document.getElementById('plan-resumen').innerHTML = `
+    <div><small>Cuotas pagadas</small><b>${pagadas.length} de ${c.cuotas.length}</b></div>
+    <div><small>Saldo pendiente</small><b>${fmtMonto(saldo)}</b></div>
+    <div><small>${vencidas>0 ? 'Cuotas vencidas' : 'Total pagado'}</small><b style="${vencidas>0?'color:var(--red);':''}">${vencidas>0 ? vencidas : fmtMonto(montoPagado)}</b></div>`;
+
+  document.getElementById('plan-body').innerHTML = c.cuotas.map(q=>{
+    const acciones = q.estado==='pagada'
+      ? `<button class="btn btn-ghost btn-sm" onclick="abrirComprobante('${c.id}', ${q.numero})">Comprobante</button>
+         <button class="btn btn-ghost btn-sm" onclick="deshacerPago('${c.id}', ${q.numero})">Deshacer</button>`
+      : `<button class="btn btn-ghost btn-sm" onclick="abrirRecordatorioId('${c.id}', ${q.numero})">Recordar</button>
+         <button class="btn btn-primary btn-sm" onclick="marcarPagada('${c.id}', ${q.numero})">Pagada</button>`;
+    return `<tr>
+      <td class="mono">${q.numero}</td>
+      <td>${fechaStr(q.vence)}</td>
+      <td class="mono">${fmtMonto(q.monto)}</td>
+      <td><span class="estado-dot ${q.estado}">${q.estado.charAt(0).toUpperCase()+q.estado.slice(1)}</span></td>
+      <td>${q.fechaPago ? fechaStr(q.fechaPago) : '—'}</td>
+      <td><div style="display:flex; gap:6px; flex-wrap:wrap;">${acciones}</div></td>
+    </tr>`;
+  }).join('');
+}
+function editarDesdePlan(){
+  const id = planAbiertoId;
+  cerrarModal('modalPlan');
+  if(id) abrirEditarCliente(id);
+}
+
 
 document.getElementById('filtroMes').addEventListener('change', renderCuotas);
 document.getElementById('filtroCliente').addEventListener('input', renderCuotas);
@@ -1057,15 +1478,15 @@ function renderVehiculos(){
     const colorGan = ganancia >= 0 ? 'var(--blue-bright)' : 'var(--red)';
     const etiquetaGan = v.estado==='vendido' ? 'ganancia' : 'proyectada';
     return `<tr>
-      <td>${v.unidad}</td>
+      <td>${esc(v.unidad)}</td>
       <td>${v.anio}</td>
-      <td class="mono">${v.patente}</td>
+      <td class="mono">${esc(v.patente)}</td>
       <td class="mono">${fmtMonto(v.precioCompra)}</td>
       <td class="mono">${fmtMonto(v.costos)}</td>
       <td class="mono">${fmtMonto(v.precioVenta)}</td>
       <td class="mono" style="color:${colorGan}; font-weight:700;">${fmtMonto(ganancia)}<br><span style="font-size:10px; color:var(--gray); font-weight:400;">${etiquetaGan}</span></td>
       <td><span class="estado-dot ${v.estado}">${v.estado.charAt(0).toUpperCase()+v.estado.slice(1)}</span></td>
-      <td>${v.cliente}</td>
+      <td>${esc(v.cliente)}</td>
     </tr>`;
   }).join('');
 }
@@ -1105,45 +1526,149 @@ document.addEventListener('click', e=>{
 
 /* ---------- modales: abrir / cerrar ---------- */
 function abrirModal(id){ document.getElementById(id).classList.add('open'); }
-function cerrarModal(id){ document.getElementById(id).classList.remove('open'); }
+function cerrarModal(id){
+  document.getElementById(id).classList.remove('open');
+  if(id==='modalPlan') planAbiertoId = null;
+}
 document.querySelectorAll('.modal-overlay').forEach(ov=>{
   ov.addEventListener('click', e=>{ if(e.target===ov) cerrarModal(ov.id); });
 });
 
-/* ---------- alta de cliente ---------- */
-document.getElementById('formCliente').addEventListener('submit', e=>{
-  e.preventDefault();
-  const nombre = document.getElementById('fc-nombre').value.trim();
-  const dni = document.getElementById('fc-dni').value.trim();
-  const telefono = document.getElementById('fc-telefono').value.trim();
-  const vehiculo = document.getElementById('fc-vehiculo').value.trim();
-  const patente = document.getElementById('fc-patente').value.trim() || '—';
+/* ---------- alta / edición / baja de cliente ---------- */
+let editandoClienteId = null;
+
+function setPlanCamposHabilitados(on){
+  ['fc-monto','fc-cantidad','fc-fecha','fc-pagadas'].forEach(id=>{ document.getElementById(id).disabled = !on; });
+}
+function abrirNuevoCliente(){
+  editandoClienteId = null;
+  document.getElementById('formCliente').reset();
+  document.getElementById('fc-titulo').textContent = 'Nuevo cliente';
+  document.getElementById('fc-guardar').textContent = 'Guardar cliente';
+  document.getElementById('fc-regenerar-wrap').style.display = 'none';
+  document.getElementById('fc-eliminar').style.display = 'none';
+  setPlanCamposHabilitados(true);
+  abrirModal('modalCliente');
+}
+function abrirEditarCliente(id){
+  const c = clienteById(id);
+  if(!c) return;
+  editandoClienteId = id;
+  document.getElementById('formCliente').reset();
+  document.getElementById('fc-titulo').textContent = 'Editar cliente';
+  document.getElementById('fc-guardar').textContent = 'Guardar cambios';
+  document.getElementById('fc-nombre').value = c.nombre || '';
+  document.getElementById('fc-dni').value = c.dni || '';
+  document.getElementById('fc-telefono').value = c.telefono || '';
+  document.getElementById('fc-vehiculo').value = c.vehiculo || '';
+  document.getElementById('fc-patente').value = (c.patente && c.patente!=='—') ? c.patente : '';
+  document.getElementById('fc-financiacion').value = c.financiacion || '';
+  const primera = c.cuotas[0];
+  document.getElementById('fc-monto').value = primera ? primera.monto : '';
+  document.getElementById('fc-cantidad').value = c.cuotas.length;
+  document.getElementById('fc-fecha').value = primera ? toInputDate(primera.vence) : '';
+  document.getElementById('fc-pagadas').value = c.cuotas.filter(q=>q.estado==='pagada').length;
+  document.getElementById('fc-regenerar').checked = false;
+  document.getElementById('fc-regenerar-wrap').style.display = 'block';
+  document.getElementById('fc-eliminar').style.display = 'inline-block';
+  setPlanCamposHabilitados(false);
+  abrirModal('modalCliente');
+}
+document.getElementById('fc-regenerar').addEventListener('change', e=>{
+  setPlanCamposHabilitados(e.target.checked);
+});
+
+function leerPlanDelForm(){
   const monto = Number(document.getElementById('fc-monto').value);
   const cantidad = Number(document.getElementById('fc-cantidad').value);
-  const fechaInicio = new Date(document.getElementById('fc-fecha').value + 'T00:00:00');
+  const fecha = document.getElementById('fc-fecha').value;
   const pagadas = Number(document.getElementById('fc-pagadas').value) || 0;
-  const cuotas = generarCuotas(fechaInicio, cantidad, monto, pagadas);
-  const nuevoCliente = {nombre, dni, telefono, vehiculo, patente, cuotas};
+  if(!(monto>0) || !(cantidad>0) || !fecha){ alert('Completá monto, cantidad de cuotas y fecha de la primera cuota.'); return null; }
+  if(pagadas<0 || pagadas>cantidad){ alert('Las cuotas ya pagadas no pueden superar la cantidad total de cuotas.'); return null; }
+  return generarCuotas(fechaISO(fecha), cantidad, monto, pagadas);
+}
 
+document.getElementById('formCliente').addEventListener('submit', e=>{
+  e.preventDefault();
+  const datos = {
+    nombre: document.getElementById('fc-nombre').value.trim(),
+    dni: document.getElementById('fc-dni').value.trim(),
+    telefono: document.getElementById('fc-telefono').value.trim(),
+    vehiculo: document.getElementById('fc-vehiculo').value.trim(),
+    patente: document.getElementById('fc-patente').value.trim() || '—',
+    financiacion: document.getElementById('fc-financiacion').value
+  };
+
+  /* ----- edición ----- */
+  if(editandoClienteId){
+    const c = clienteById(editandoClienteId);
+    if(!c) return;
+    let cuotasNuevas = null;
+    if(document.getElementById('fc-regenerar').checked){
+      cuotasNuevas = leerPlanDelForm();
+      if(!cuotasNuevas) return;
+      // conserva la fecha de pago de las cuotas que ya estaban registradas como pagadas
+      cuotasNuevas.forEach(q=>{
+        if(q.estado==='pagada'){
+          const vieja = c.cuotas.find(x=>x.numero===q.numero && x.estado==='pagada');
+          if(vieja && vieja.fechaPago) q.fechaPago = vieja.fechaPago;
+        }
+      });
+    }
+    const id = editandoClienteId;
+    if(MODO_DEMO){
+      Object.assign(c, datos);
+      if(cuotasNuevas) c.cuotas = cuotasNuevas;
+      ordenarClientes();
+      cerrarModal('modalCliente');
+      actualizarTodo();
+      mostrarToast('Cambios guardados');
+    } else {
+      const upd = {...datos};
+      if(cuotasNuevas) upd.cuotas = cuotasAFirestore(cuotasNuevas);
+      db.collection('yam_clientes').doc(id).update(upd).then(()=>{
+        cerrarModal('modalCliente');
+        mostrarToast('Cambios guardados');
+      }).catch(err=>alert('Error al guardar los cambios: ' + err.message));
+    }
+    return;
+  }
+
+  /* ----- alta ----- */
+  const cuotas = leerPlanDelForm();
+  if(!cuotas) return;
   if(MODO_DEMO){
-    clientes.push(nuevoCliente);
+    clientes.push({id:nuevoIdLocal(), ...datos, cuotas});
+    ordenarClientes();
     cerrarModal('modalCliente');
-    e.target.reset();
     actualizarTodo();
-    mostrarToast(`Cliente ${nombre} agregado correctamente`);
+    mostrarToast(`Cliente ${datos.nombre} agregado correctamente`);
   } else {
     db.collection('yam_clientes').add({
-      nombre, dni, telefono, vehiculo, patente, uid: ADMIN_UID,
-      cuotas: cuotas.map(q=>({...q, vence: firebase.firestore.Timestamp.fromDate(q.vence)}))
+      ...datos, uid: ADMIN_UID, cuotas: cuotasAFirestore(cuotas)
     }).then(()=>{
       cerrarModal('modalCliente');
-      e.target.reset();
-      mostrarToast(`Cliente ${nombre} agregado correctamente`);
-    }).catch(err=>{
-      alert('Error al guardar el cliente: ' + err.message);
-    });
+      mostrarToast(`Cliente ${datos.nombre} agregado correctamente`);
+    }).catch(err=>alert('Error al guardar el cliente: ' + err.message));
   }
 });
+
+function eliminarClienteActual(){
+  const c = clienteById(editandoClienteId);
+  if(!c) return;
+  if(!confirm(`¿Eliminar a ${c.nombre} y todo su plan de cuotas? Esta acción no se puede deshacer.`)) return;
+  const nombre = c.nombre, id = c.id;
+  if(MODO_DEMO){
+    clientes = clientes.filter(x=>x.id!==id);
+    cerrarModal('modalCliente'); actualizarTodo();
+    mostrarToast(`Cliente ${nombre} eliminado`);
+  } else {
+    db.collection('yam_clientes').doc(id).delete().then(()=>{
+      cerrarModal('modalCliente');
+      mostrarToast(`Cliente ${nombre} eliminado`);
+    }).catch(err=>alert('Error al eliminar: ' + err.message));
+  }
+}
 
 /* ---------- alta de unidad ---------- */
 document.getElementById('formVehiculo').addEventListener('submit', e=>{
@@ -1180,13 +1705,13 @@ document.getElementById('formVehiculo').addEventListener('submit', e=>{
   }
 });
 
-/* ---------- persistencia de cuotas (marcar pagada) ---------- */
-function guardarCuotasCliente(clienteIdx){
+/* ---------- persistencia de cuotas (marcar pagada / deshacer) ---------- */
+function guardarCuotasCliente(clienteId){
   if(MODO_DEMO) return;
-  const cliente = clientes[clienteIdx];
-  if(!cliente || !cliente.id) return;
-  db.collection('yam_clientes').doc(cliente.id).update({
-    cuotas: cliente.cuotas.map(q=>({...q, vence: firebase.firestore.Timestamp.fromDate(q.vence)}))
+  const cliente = clienteById(clienteId);
+  if(!cliente) return;
+  db.collection('yam_clientes').doc(clienteId).update({
+    cuotas: cuotasAFirestore(cliente.cuotas)
   }).catch(err=>{
     alert('Error al guardar el pago: ' + err.message);
   });
@@ -1200,6 +1725,7 @@ function actualizarTodo(){
   renderCuotas();
   poblarFiltroMesVenta();
   renderVehiculos();
+  renderPlan();
 }
 
 /* ---------- navegación entre secciones ---------- */
@@ -1238,14 +1764,15 @@ function suscribirDatos(){
         const d = doc.data();
         return {
           id: doc.id, nombre:d.nombre, dni:d.dni, telefono:d.telefono,
-          vehiculo:d.vehiculo, patente:d.patente,
-          cuotas: (d.cuotas||[]).map(q=>({...q, vence: q.vence.toDate ? q.vence.toDate() : new Date(q.vence)}))
+          vehiculo:d.vehiculo, patente:d.patente, financiacion:d.financiacion || '',
+          cuotas: cuotasDesdeFirestore(d.cuotas)
         };
       });
+      ordenarClientes();
       actualizarTodo();
     }, err=>{
       console.error('Error leyendo clientes:', err);
-      alert('No se pudo leer la colección "clientes". Revisá las reglas de seguridad y que el índice/UID sean correctos.');
+      alert('No se pudo leer la colección "yam_clientes". Revisá las reglas de seguridad y que el UID sea correcto.');
     });
 
   unsubVehiculos = db.collection('yam_vehiculos').where('uid','==', ADMIN_UID)
@@ -1262,13 +1789,23 @@ function suscribirDatos(){
       actualizarTodo();
     }, err=>{
       console.error('Error leyendo vehiculos:', err);
-      alert('No se pudo leer la colección "vehiculos". Revisá las reglas de seguridad y que el índice/UID sean correctos.');
+      alert('No se pudo leer la colección "yam_vehiculos". Revisá las reglas de seguridad y que el UID sea correcto.');
     });
 }
 
+function poblarSelectsFinanciacion(){
+  const opts = FINANCIACIONES.map(f=>`<option value="${f}">${f}</option>`).join('');
+  document.getElementById('fc-financiacion').innerHTML = '<option value="" disabled selected>Seleccionar...</option>' + opts;
+  document.getElementById('filtroFinanciacion').innerHTML =
+    '<option value="todas">Todas</option>' + opts + '<option value="sin">Sin asignar</option>';
+}
+poblarSelectsFinanciacion();
+document.getElementById('filtroFinanciacion').addEventListener('change', renderClientes);
+
 if(MODO_DEMO){
   document.getElementById('demoBanner').style.display = 'block';
-  clientes = clientesSeedFn();
+  clientes = clientesSeedFn().map((c,i)=>({...c, id:nuevoIdLocal(), financiacion:FINANCIACIONES[i % FINANCIACIONES.length]}));
+  ordenarClientes();
   vehiculosInventario = vehiculosSeed.slice();
   iniciarApp();
 } else {
@@ -1299,6 +1836,7 @@ window.addEventListener('resize', ()=>{
   const activo = document.querySelector('.nav-btn.active');
   if(activo) moverIndicador(activo);
 });
+
 </script>
 </body>
 </html>
