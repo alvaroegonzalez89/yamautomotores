@@ -388,6 +388,94 @@
   .receipt-row span:last-child{font-weight:600; text-align:right;}
   .receipt-foot{font-size:10px; color:#6b7280; padding:4px 16px 12px;}
   @media(max-width:520px){ .plan-resumen{grid-template-columns:1fr;} }
+  /* ---------- pagos parciales, tramos, financiación, documentos ---------- */
+  input[type="text"]{text-transform:uppercase;}
+  .estado-dot.parcial::before{background:var(--amber);}
+  .sub-saldo{font-size:11px; color:var(--amber); font-family:'Inter',sans-serif; font-weight:600; letter-spacing:0;}
+  .pago-line{display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:4px; font-size:12px; font-family:'JetBrains Mono',monospace;}
+  .modal-box.mid{max-width:580px;}
+  .tramo-row{display:grid; grid-template-columns:64px 14px minmax(0,1fr) 142px 34px; gap:8px; align-items:center; margin-bottom:8px;}
+  .tramo-row .tr-de{color:var(--gray); font-size:14px; text-align:center;}
+  .tramo-row input, .tramo-row select{width:100%; background:var(--off); border:1px solid var(--gray-dark); color:var(--white); border-radius:8px; padding:9px 10px; font-family:'Inter',sans-serif; font-size:13px; min-width:0;}
+  .tramo-row input:focus, .tramo-row select:focus{outline:none; border-color:var(--blue-bright); box-shadow:0 0 0 3px rgba(62,156,255,0.18);}
+  .monto-mon{display:grid; grid-template-columns:1fr 92px; gap:6px;}
+  @media(max-width:560px){ .tramo-row{grid-template-columns:64px 14px minmax(0,1fr) 34px;} .tramo-row .tr-moneda{grid-column:1 / 4;} }
+  .aviso-ok{color:var(--blue-bright) !important;} .aviso-parcial{color:var(--amber) !important;} .aviso-mal{color:var(--red) !important;}
+  .fin-cards{display:grid; grid-template-columns:repeat(auto-fit, minmax(170px,1fr)); gap:12px; margin-bottom:32px;}
+  .fin-card{display:flex; flex-direction:column; gap:3px; text-align:left; cursor:pointer; font-family:'Inter',sans-serif; color:var(--white);
+    background:var(--bg-card); border:1px solid var(--off); border-left:4px solid var(--blue); border-radius:14px; padding:16px 16px; transition:transform .15s, border-color .15s, box-shadow .15s;}
+  .fin-card:hover{transform:translateY(-2px); border-color:var(--gray-dark);}
+  .fin-card.sel{border-color:var(--blue-bright); box-shadow:0 0 0 2px rgba(62,156,255,0.25), 0 0 16px rgba(62,156,255,0.18);}
+  .fin-nombre{font-family:'Big Shoulders Display',sans-serif; font-weight:800; font-size:20px; text-transform:uppercase; letter-spacing:.02em;}
+  .fin-monto{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:22px; letter-spacing:-0.02em;}
+  .fin-usd{font-family:'JetBrains Mono',monospace; font-weight:600; font-size:14px; color:var(--blue-bright);}
+  .fin-sub{font-size:11px; color:var(--gray);}
+  .doc-estados{display:flex; gap:18px; flex-wrap:wrap; margin-bottom:12px;}
+  .doc-estado{font-size:12px; font-weight:600;}
+  .doc-estado.ok{color:var(--blue-bright);} .doc-estado.sin{color:var(--gray);}
+  .dg-sec{font-family:'Big Shoulders Display',sans-serif; font-weight:800; text-transform:uppercase; font-size:16px; margin:18px 0 10px; padding-top:12px; border-top:1px solid var(--off);}
+  .dg-sec small{font-family:'Inter',sans-serif; text-transform:none; font-weight:500; color:var(--gray); font-size:11px;}
+  .dg-check{display:flex; gap:16px; flex-wrap:wrap; align-items:center; margin:8px 0 4px;}
+  .dg-check label{display:flex; gap:6px; align-items:center; font-size:13px; color:var(--white); text-transform:none; letter-spacing:0; margin:0;}
+  .dg-check input[type="checkbox"]{width:auto;}
+  .dg-check select{width:auto; min-width:0;}
+  .receipt-paid.parcial{background:#E0A93A; color:#0B0D12;}
+  .receipt-saldo{background:#fdf4de; border:1px solid #E0A93A; border-radius:8px; padding:10px 12px; margin:10px 0 6px; display:flex; flex-direction:column; gap:2px;}
+  .receipt-saldo small{font-size:10px; font-weight:700; color:#92640a; letter-spacing:.06em;}
+  .receipt-saldo b{font-family:'JetBrains Mono',monospace; font-size:20px;}
+  .receipt-saldo span{font-size:11px; color:#5a5a5a;}
+
+  /* visor de documentos */
+  .docviewer{display:none; position:fixed; inset:0; z-index:400; background:#0F1116; flex-direction:column;}
+  .docviewer.open{display:flex;}
+  .dv-bar{display:flex; gap:12px; align-items:center; flex-wrap:wrap; padding:10px 16px; background:var(--bg-panel); border-bottom:1px solid var(--off);}
+  .dv-tabs{display:flex; gap:4px;}
+  .dv-tab{background:var(--off); color:var(--gray); border:none; border-radius:8px; padding:8px 14px; font-family:'Inter',sans-serif; font-weight:600; font-size:13px; cursor:pointer;}
+  .dv-tab.active{background:var(--blue); color:#fff;}
+  .dv-tab:disabled{opacity:.35; cursor:not-allowed;}
+  .dv-filtro{display:inline-flex; gap:6px; align-items:center; font-size:12px; color:var(--gray);}
+  .dv-filtro select{background:var(--off); border:1px solid var(--gray-dark); color:var(--white); border-radius:8px; padding:7px 10px; font-size:12px;}
+  .dv-info{font-size:12px; color:var(--gray); flex:1; min-width:140px;}
+  .dv-acciones{display:flex; gap:8px;}
+  .dv-scroll{flex:1; overflow:auto; padding:18px;}
+  #dv-contenido{max-width:820px; margin:0 auto;}
+  .dv-vacio{color:var(--gray); text-align:center; padding:40px;}
+
+  /* pagaré */
+  .pagare{position:relative; background:#fff; color:#111; border:1.5px solid #111; padding:12px 16px 10px; margin-bottom:16px; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.45; break-inside:avoid; page-break-inside:avoid;}
+  .pg-top, .pg-row{display:flex; justify-content:space-between; align-items:flex-end; gap:12px; margin-bottom:8px;}
+  .pg-line{display:inline-block; border-bottom:1px solid #111; min-width:44px; padding:0 6px; text-align:center; font-weight:700;}
+  .pg-w100{min-width:100px;} .pg-w120{min-width:110px;} .pg-w160{min-width:150px;} .pg-w220{min-width:220px;}
+  .pg-texto{margin:8px 0 10px; text-align:justify;}
+  .pg-texto u{font-weight:700; text-decoration:underline; text-underline-offset:2px;}
+  .pg-firmantes{display:grid; grid-template-columns:1fr 1fr; gap:22px; margin-top:6px;}
+  .pg-fr{font-size:11px; line-height:1.55; word-break:break-word;}
+  .pg-firma{margin-top:26px; border-top:1px solid #111; font-size:10px; text-align:center; padding-top:2px;}
+  .pg-aclar{font-size:10px; margin-top:6px; border-bottom:1px solid #999; height:14px;}
+  .pg-sello{position:absolute; right:7%; top:33%; transform:rotate(-9deg); border:3px solid #16a34a; color:#16a34a; font-weight:800; font-size:28px; letter-spacing:.12em; padding:1px 16px; border-radius:6px; background:transparent; opacity:.8; mix-blend-mode:multiply; text-align:center; line-height:1.1; pointer-events:none;}
+  .pg-sello small{display:block; font-size:11px; letter-spacing:.05em; font-weight:700;}
+  .pg-sello.parcial{border-color:#b45309; color:#b45309; font-size:22px;}
+
+  /* contrato */
+  .contrato{background:#fff; color:#111; padding:30px 34px; font-family:Georgia,'Times New Roman',serif; font-size:13.5px; line-height:1.65; text-align:justify;}
+  .contrato h1{font-family:Georgia,serif; font-size:17px; text-align:center; letter-spacing:.04em; margin-bottom:18px; text-transform:none;}
+  .contrato p{margin-bottom:10px;}
+  .ct-firmas{display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:26px; margin-top:64px; text-align:center; font-size:12px;}
+  .ct-linea{border-top:1px solid #111; margin-bottom:4px;}
+  .ct-firma{break-inside:avoid;}
+
+  @media print{
+    @page{size:A4; margin:10mm;}
+    body.viendo-doc{background:#fff !important; background-image:none !important;}
+    body.viendo-doc > *:not(#docViewer){display:none !important;}
+    body.viendo-doc #docViewer{position:static !important; display:block !important; background:#fff !important;}
+    body.viendo-doc .dv-bar{display:none !important;}
+    body.viendo-doc .dv-scroll{overflow:visible !important; padding:0 !important;}
+    body.viendo-doc #dv-contenido{max-width:none !important;}
+    body.viendo-doc .pagare{margin:0 0 6mm !important; font-size:9.5pt;}
+    body.viendo-doc .pg-sello{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    body.viendo-doc .contrato{padding:0 !important; font-size:11pt;}
+  }
 </style>
 </head>
 <body>
@@ -426,6 +514,7 @@
       <button class="nav-btn" data-target="clientes">Clientes</button>
       <button class="nav-btn" data-target="cuotas">Cuotas del mes</button>
       <button class="nav-btn" data-target="vehiculos">Vehículos</button>
+      <button class="nav-btn" data-target="documentos">Documentos</button>
     </div>
     <button class="btn btn-ghost" id="btnLogout" style="display:none;" onclick="cerrarSesion()">Salir</button>
   </div>
@@ -455,7 +544,15 @@
   <section id="dashboard" class="active">
     <div class="stats" id="statsGrid"></div>
 
-    <h2 class="section-title">Próximos vencimientos</h2>
+    <h2 class="section-title">Cobrado por financiación</h2>
+    <div class="filtros">
+      <div><label>Mes</label><select id="dashMes"></select></div>
+      <div><label>Financiación</label><select id="dashFin"></select></div>
+      <span class="filtro-resultados" id="dashTotal"></span>
+    </div>
+    <div class="fin-cards" id="finCards"></div>
+
+    <h2 class="section-title">Próximos vencimientos<span id="proxFinLabel" style="color:var(--blue-bright);"></span></h2>
     <table style="margin-bottom:36px;">
       <thead><tr><th>Cliente</th><th>Vehículo</th><th>Cuota</th><th>Vence</th><th>Estado</th></tr></thead>
       <tbody id="proximosBody"></tbody>
@@ -496,6 +593,7 @@
           <option value="todos">Todos</option>
           <option value="pagada">Pagadas</option>
           <option value="pendiente">Pendientes</option>
+          <option value="parcial">Con pago parcial</option>
           <option value="vencida">Vencidas</option>
         </select>
       </div>
@@ -536,9 +634,47 @@
     </div>
   </section>
 
+  <!-- ============ DOCUMENTOS ============ -->
+  <section id="documentos">
+    <div class="section-header">
+      <h2 class="section-title">Pagarés y contratos</h2>
+    </div>
+    <div class="filtros">
+      <div><label>Cliente</label><input type="text" id="filtroDocCliente" placeholder="Buscar por nombre..."></div>
+      <div>
+        <label>Estado</label>
+        <select id="filtroDocEstado">
+          <option value="todos">Todos</option>
+          <option value="sin">Sin generar</option>
+          <option value="gen">Con documentos</option>
+        </select>
+      </div>
+      <span class="filtro-resultados" id="filtroResultadosDocs"></span>
+    </div>
+    <div class="clients" id="docsList"></div>
+  </section>
+
 </main>
 
 </div><!-- /appRoot -->
+
+<div class="docviewer" id="docViewer">
+  <div class="dv-bar">
+    <div class="dv-tabs">
+      <button type="button" class="dv-tab" id="dv-tab-pagares" onclick="dvSetModo('pagares')">Pagarés</button>
+      <button type="button" class="dv-tab" id="dv-tab-contrato" onclick="dvSetModo('contrato')">Contrato</button>
+    </div>
+    <label class="dv-filtro" id="dv-filtro-wrap">Mostrar
+      <select id="dv-filtro"><option value="todos">Todos</option><option value="pendientes">Solo pendientes</option><option value="pagados">Solo pagados</option></select>
+    </label>
+    <span class="dv-info" id="dv-info"></span>
+    <div class="dv-acciones">
+      <button type="button" class="btn btn-ghost" onclick="cerrarDoc()">Cerrar</button>
+      <button type="button" class="btn btn-primary" onclick="imprimirDoc()">Imprimir</button>
+    </div>
+  </div>
+  <div class="dv-scroll"><div id="dv-contenido"></div></div>
+</div>
 
 <footer>YAM Automotores · Sistema de gestión · AppSur</footer>
 
@@ -549,7 +685,7 @@
 
 <!-- ============ MODAL: CLIENTE (alta y edición) ============ -->
 <div class="modal-overlay" id="modalCliente">
-  <div class="modal-box">
+  <div class="modal-box mid">
     <h3 id="fc-titulo">Nuevo cliente</h3>
     <form id="formCliente">
       <div class="field"><label>Nombre y apellido</label><input type="text" id="fc-nombre" required></div>
@@ -570,9 +706,12 @@
         <small style="color:var(--gray); font-size:11px; display:block; margin-top:4px;">Recalcula todas las cuotas con los datos de abajo. Las primeras “cuotas ya pagadas” quedan como pagadas y el resto se calcula según la fecha de hoy.</small>
       </div>
 
-      <div class="modal-row">
-        <div class="field"><label>Monto de cuota</label><input type="number" id="fc-monto" placeholder="80000" required></div>
-        <div class="field"><label>Cantidad de cuotas</label><input type="number" id="fc-cantidad" placeholder="12" required></div>
+      <div class="field">
+        <label>Cuotas del plan</label>
+        <div id="fc-tramos"></div>
+        <button type="button" class="btn btn-ghost btn-sm" id="fc-add-tramo" onclick="agregarTramo()">+ Agregar cuotas de otro importe</button>
+        <small style="color:var(--gray); font-size:11px; display:block; margin-top:6px;">Ej: 4 cuotas de $500.000 y, en otra fila, 1 cuota de $400.000. Cada fila puede ser en pesos o en dólares.</small>
+        <small id="fc-resumen-plan" style="color:var(--blue-bright); font-size:12px; font-weight:600; display:block; margin-top:6px;"></small>
       </div>
       <div class="modal-row">
         <div class="field">
@@ -629,6 +768,109 @@
   </div>
 </div>
 
+<!-- ============ MODAL: REGISTRAR PAGO ============ -->
+<div class="modal-overlay" id="modalPago">
+  <div class="modal-box">
+    <h3 id="pago-titulo">Registrar pago</h3>
+    <form id="formPago">
+      <div class="plan-sub" id="pago-info" style="margin-bottom:14px;"></div>
+      <div class="modal-row">
+        <div class="field">
+          <label>Importe que entrega</label>
+          <input type="number" id="pago-monto" min="0.01" step="0.01" required>
+          <small id="pago-moneda" style="color:var(--gray); font-size:11px; display:block; margin-top:4px;"></small>
+        </div>
+        <div class="field"><label>Fecha de pago</label><input type="date" id="pago-fecha" required></div>
+      </div>
+      <div class="plan-sub" id="pago-aviso" style="min-height:20px; font-weight:600;"></div>
+      <div class="modal-actions" style="flex-wrap:wrap;">
+        <button type="button" class="btn btn-ghost" onclick="cerrarModal('modalPago')">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Registrar y generar comprobante</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ MODAL: GENERAR PAGARÉS Y CONTRATO ============ -->
+<div class="modal-overlay" id="modalDocs">
+  <div class="modal-box wide">
+    <h3 id="dg-titulo">Generar documentos</h3>
+    <form id="formDocs">
+      <div class="plan-sub" id="dg-resumen" style="margin-bottom:6px;"></div>
+      <div class="dg-check">
+        <label><input type="checkbox" id="dg-hacer-pagares" checked> Generar pagarés</label>
+        <label><input type="checkbox" id="dg-hacer-contrato" checked> Generar contrato de compraventa</label>
+        <select id="dg-alcance"><option value="todas">Pagarés de todas las cuotas</option><option value="impagas">Solo de las cuotas impagas</option></select>
+      </div>
+
+      <div class="dg-sec">Vendedor y pagarés <small>(se recuerdan para el próximo cliente)</small></div>
+      <div class="modal-row">
+        <div class="field"><label>Vendedor (nombre o razón social)</label><input type="text" id="dg-vendedor"></div>
+        <div class="field"><label>CUIT / DNI del vendedor</label><input type="text" id="dg-vendedor-doc"></div>
+      </div>
+      <div class="field"><label>Domicilio del vendedor</label><input type="text" id="dg-vendedor-dom"></div>
+      <div class="modal-row">
+        <div class="field"><label>Pagarés a la orden de</label><input type="text" id="dg-beneficiario"></div>
+        <div class="field"><label>Pagadero en la calle</label><input type="text" id="dg-lugar-pago" placeholder="Ej: ESPINOLA 155"></div>
+      </div>
+      <div class="modal-row">
+        <div class="field"><label>Ciudad de emisión</label><input type="text" id="dg-ciudad-emision"></div>
+        <div class="field"><label>Ciudad de pago</label><input type="text" id="dg-ciudad-pago"></div>
+      </div>
+      <div class="modal-row">
+        <div class="field"><label>Valor recibido en</label><input type="text" id="dg-valor"></div>
+        <div class="field"><label>Fecha de emisión</label><input type="date" id="dg-fecha" required></div>
+      </div>
+
+      <div class="dg-sec">Firmante 1</div>
+      <div class="modal-row">
+        <div class="field"><label>Nombre y apellido</label><input type="text" id="dg-f1-nombre"></div>
+        <div class="field"><label>DNI</label><input type="text" id="dg-f1-dni"></div>
+      </div>
+      <div class="modal-row">
+        <div class="field"><label>Calle</label><input type="text" id="dg-f1-calle"></div>
+        <div class="field"><label>Localidad</label><input type="text" id="dg-f1-loc"></div>
+      </div>
+      <div class="field"><label>Teléfono</label><input type="text" id="dg-f1-tel"></div>
+
+      <div class="dg-sec">Firmante 2 <small>(opcional)</small></div>
+      <div class="modal-row">
+        <div class="field"><label>Nombre y apellido</label><input type="text" id="dg-f2-nombre"></div>
+        <div class="field"><label>DNI</label><input type="text" id="dg-f2-dni"></div>
+      </div>
+      <div class="modal-row">
+        <div class="field"><label>Calle</label><input type="text" id="dg-f2-calle"></div>
+        <div class="field"><label>Localidad</label><input type="text" id="dg-f2-loc"></div>
+      </div>
+      <div class="field"><label>Teléfono</label><input type="text" id="dg-f2-tel"></div>
+
+      <div class="dg-sec">Contrato de compraventa</div>
+      <div class="modal-row">
+        <div class="field"><label>Vehículo</label><input type="text" id="dg-veh"></div>
+        <div class="field"><label>Patente / dominio</label><input type="text" id="dg-pat"></div>
+      </div>
+      <div class="modal-row">
+        <div class="field"><label>N° de motor</label><input type="text" id="dg-motor"></div>
+        <div class="field"><label>N° de chasis</label><input type="text" id="dg-chasis"></div>
+      </div>
+      <div class="modal-row">
+        <div class="field"><label>Precio total (opcional)</label>
+          <div class="monto-mon"><input type="number" id="dg-precio" min="0" step="0.01"><select id="dg-precio-mon"><option value="ARS">$ ARS</option><option value="USD">US$ USD</option></select></div></div>
+        <div class="field"><label>Anticipo entregado (opcional)</label>
+          <div class="monto-mon"><input type="number" id="dg-anticipo" min="0" step="0.01"><select id="dg-anticipo-mon"><option value="ARS">$ ARS</option><option value="USD">US$ USD</option></select></div></div>
+      </div>
+      <div class="field"><label>Transferencia del dominio</label>
+        <select id="dg-transf"><option value="cancelacion">Al cancelar la totalidad de las cuotas</option><option value="acto">En este acto</option></select></div>
+      <div class="plan-sub" style="margin-top:6px;">El contrato es un modelo base: hacelo revisar por tu abogado o escribano antes de usarlo con clientes.</div>
+
+      <div class="modal-actions" style="flex-wrap:wrap;">
+        <button type="button" class="btn btn-ghost" onclick="cerrarModal('modalDocs')">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Generar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- ============ MODAL: DETALLE DEL PLAN ============ -->
 <div class="modal-overlay" id="modalPlan">
   <div class="modal-box wide">
@@ -638,7 +880,7 @@
     <div class="plan-resumen" id="plan-resumen"></div>
     <div class="table-scroll">
       <table class="plan-table">
-        <thead><tr><th>N°</th><th>Vence</th><th>Monto</th><th>Estado</th><th>Pagada el</th><th>Acciones</th></tr></thead>
+        <thead><tr><th>N°</th><th>Vence</th><th>Monto</th><th>Estado</th><th>Pagos</th><th>Acciones</th></tr></thead>
         <tbody id="plan-body"></tbody>
       </table>
     </div>
@@ -688,6 +930,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 
+
 /* ============================================================
    CONFIGURACIÓN DE FIREBASE
    Este sistema vive en el proyecto compartido appsur-2ffb3 (mismo
@@ -729,15 +972,21 @@ function esc(s){
 }
 
 /*PURE_START*/
+const MESES_UP = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
+function up(s){ return String(s==null?'':s).toLocaleUpperCase('es-AR'); }
 function inicioDia(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
 function fechaISO(s){ const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); }
 function fechaStr(d){
   return d.toLocaleDateString('es-AR', {day:'2-digit', month:'short', year:'numeric'});
 }
-function fmtMonto(n){
-  return '$' + Number(n||0).toLocaleString('es-AR');
+function fechaLarga(d){ return `${d.getDate()} DE ${MESES_UP[d.getMonth()]} DE ${d.getFullYear()}`; }
+function redondear(n){ return Math.round(Number(n||0)*100)/100; }
+function monedaOk(m){ return m==='USD' ? 'USD' : 'ARS'; }
+function fmtMonto(n, moneda){
+  const v = Number(n||0).toLocaleString('es-AR', {maximumFractionDigits:2});
+  return (moneda==='USD' ? 'US$ ' : '$') + v;
 }
-// Suma meses respetando el día (31 de enero + 1 mes = 28/29 de febrero, sin desbordar a marzo)
+// Suma meses respetando el día (31 de enero + 1 mes = fin de febrero, sin desbordar a marzo)
 function sumarMeses(fecha, meses){
   const dia = fecha.getDate();
   const r = new Date(fecha.getFullYear(), fecha.getMonth()+meses, 1);
@@ -748,29 +997,112 @@ function sumarMeses(fecha, meses){
 function diasHasta(fecha){
   return Math.round((inicioDia(fecha) - HOY) / 86400000);
 }
-// El estado "vencida/pendiente" se calcula siempre contra la fecha de hoy (nunca queda congelado en la base)
+
+/* ---------- cuotas: importe y moneda por cuota, pagos parciales ---------- */
+function pagadoDe(q){ return redondear((q.pagos||[]).reduce((a,p)=>a+Number(p.monto||0),0)); }
+function saldoDe(q){ return Math.max(0, redondear(q.monto - pagadoDe(q))); }
+// pagada = cubierta por completo. "vencida/parcial/pendiente" se calcula siempre contra hoy.
 function estadoEfectivo(q){
-  if(q.estado==='pagada') return 'pagada';
-  return q.vence < HOY ? 'vencida' : 'pendiente';
+  const pag = pagadoDe(q);
+  if(pag >= q.monto - 0.005) return 'pagada';
+  if(q.vence < HOY) return 'vencida';
+  return pag > 0 ? 'parcial' : 'pendiente';
 }
-// La cuota 1 vence en la fecha indicada; las demás, un mes después cada una.
-// Las primeras `pagadas` cuotas quedan como pagadas; el resto se calcula contra hoy.
-function generarCuotas(primeraFecha, cantidad, monto, pagadas){
+function fechaPagoDe(q){
+  if(q.estado!=='pagada' || !(q.pagos||[]).length) return null;
+  return q.pagos[q.pagos.length-1].fecha || null;
+}
+// tramos = [{cantidad, monto, moneda}] → cuotas consecutivas. La cuota 1 vence en primeraFecha.
+// Las primeras `pagadas` cuotas quedan pagadas; el resto se calcula contra hoy.
+function generarCuotasTramos(primeraFecha, tramos, pagadas){
   const cuotas = [];
-  for(let i=1;i<=cantidad;i++){
-    const q = {
-      numero:i, monto,
-      vence: sumarMeses(primeraFecha, i-1),
-      estado: i<=pagadas ? 'pagada' : 'pendiente',
-      fechaPago: null
-    };
-    q.estado = estadoEfectivo(q);
-    cuotas.push(q);
-  }
+  let n = 0;
+  tramos.forEach(t=>{
+    for(let k=0;k<t.cantidad;k++){
+      n++;
+      const q = {numero:n, monto:Number(t.monto), moneda:monedaOk(t.moneda), vence:sumarMeses(primeraFecha, n-1), pagos:[]};
+      if(n<=pagadas) q.pagos.push({monto:q.monto, fecha:null});
+      q.estado = estadoEfectivo(q);
+      cuotas.push(q);
+    }
+  });
   return cuotas;
 }
+function generarCuotas(primeraFecha, cantidad, monto, pagadas){
+  return generarCuotasTramos(primeraFecha, [{cantidad, monto, moneda:'ARS'}], pagadas);
+}
+function tramosDesdeCuotas(cuotas){
+  const tramos = [];
+  cuotas.forEach(q=>{
+    const m = monedaOk(q.moneda), u = tramos[tramos.length-1];
+    if(u && u.monto===q.monto && u.moneda===m) u.cantidad++;
+    else tramos.push({cantidad:1, monto:q.monto, moneda:m});
+  });
+  return tramos;
+}
+function describirTramos(tramos){
+  const p = tramos.map(t=>`${t.cantidad} cuota${t.cantidad===1?'':'s'} de ${fmtMonto(t.monto,t.moneda)}`);
+  return p.length>1 ? p.slice(0,-1).join(', ') + ' y ' + p[p.length-1] : (p[0]||'');
+}
+function totalPorMoneda(items, getter){
+  const t = {ARS:0, USD:0};
+  items.forEach(x=>{ t[monedaOk(x.moneda)] += getter(x); });
+  t.ARS = redondear(t.ARS); t.USD = redondear(t.USD);
+  return t;
+}
+function resumenMontos(t){
+  const p = [];
+  if(t.ARS) p.push(fmtMonto(t.ARS,'ARS'));
+  if(t.USD) p.push(fmtMonto(t.USD,'USD'));
+  return p.join(' + ') || fmtMonto(0,'ARS');
+}
+function registrarPago(q, monto, fecha){
+  q.pagos = q.pagos || [];
+  q.pagos.push({monto:redondear(monto), fecha});
+  q.estado = estadoEfectivo(q);
+}
+function anularPago(q, idx){
+  q.pagos.splice(idx,1);
+  q.estado = estadoEfectivo(q);
+}
+// Al regenerar un plan: conserva fechas de pagos completos (hasta `pagadas`) y pagos parciales en curso
+function preservarPagos(viejas, nuevas, pagadas){
+  nuevas.forEach(q=>{
+    const v = viejas.find(x=>x.numero===q.numero);
+    if(v){
+      const mismo = v.monto===q.monto && monedaOk(v.moneda)===q.moneda;
+      const completa = pagadoDe(v) >= v.monto - 0.005;
+      if(q.numero<=pagadas){
+        if(mismo && completa && (v.pagos||[]).length) q.pagos = v.pagos.map(p=>({...p}));
+      } else if(mismo && !completa && (v.pagos||[]).length){
+        q.pagos = v.pagos.map(p=>({...p}));
+      }
+    }
+    q.estado = estadoEfectivo(q);
+  });
+  return nuevas;
+}
+// Lectura/escritura de cuotas (compatible con cuotas viejas que no tenían moneda ni pagos)
+function cuotaDesdeDatos(q, toDate){
+  const o = {numero:q.numero, monto:Number(q.monto), moneda:monedaOk(q.moneda), vence:inicioDia(toDate(q.vence)), pagos:[]};
+  if(Array.isArray(q.pagos)){
+    o.pagos = q.pagos.map(p=>({monto:Number(p.monto), fecha: p.fecha ? toDate(p.fecha) : null}));
+  } else if(q.estado==='pagada'){
+    o.pagos = [{monto:o.monto, fecha: q.fechaPago ? toDate(q.fechaPago) : null}];
+  }
+  o.estado = estadoEfectivo(o);
+  return o;
+}
+function cuotaADatos(q, toTs){
+  return {
+    numero:q.numero, monto:q.monto, moneda:monedaOk(q.moneda),
+    estado: q.estado==='pagada' ? 'pagada' : 'pendiente',
+    vence: toTs(q.vence),
+    pagos: (q.pagos||[]).map(p=>({monto:p.monto, fecha: p.fecha ? toTs(p.fecha) : null}))
+  };
+}
 
-// Normaliza un teléfono argentino para wa.me (formato 549 + área + número, sin 0 ni 15)
+/* ---------- teléfono para wa.me (formato argentino 549 + área + número) ---------- */
 function telefonoWa(tel){
   let d = String(tel||'').replace(/\D/g,'');
   if(d.startsWith('00')) d = d.slice(2);
@@ -788,37 +1120,98 @@ function telefonoWa(tel){
   return d;
 }
 
-/* ---------- mensajes de WhatsApp (recordatorio próxima / vencida / comprobante) ---------- */
+/* ---------- números en letras (para los pagarés) ---------- */
+const L_UNI = ['CERO','UNO','DOS','TRES','CUATRO','CINCO','SEIS','SIETE','OCHO','NUEVE','DIEZ','ONCE','DOCE','TRECE','CATORCE','QUINCE','DIECISÉIS','DIECISIETE','DIECIOCHO','DIECINUEVE','VEINTE','VEINTIUNO','VEINTIDÓS','VEINTITRÉS','VEINTICUATRO','VEINTICINCO','VEINTISÉIS','VEINTISIETE','VEINTIOCHO','VEINTINUEVE'];
+const L_DEC = ['','','','TREINTA','CUARENTA','CINCUENTA','SESENTA','SETENTA','OCHENTA','NOVENTA'];
+const L_CEN = ['','CIENTO','DOSCIENTOS','TRESCIENTOS','CUATROCIENTOS','QUINIENTOS','SEISCIENTOS','SETECIENTOS','OCHOCIENTOS','NOVECIENTOS'];
+function letrasMenorMil(n, apocope){
+  if(n===100) return 'CIEN';
+  const p = [], c = Math.floor(n/100), r = n%100;
+  if(c) p.push(L_CEN[c]);
+  if(r){
+    if(r<30){
+      let w = L_UNI[r];
+      if(apocope){ if(r===1) w = 'UN'; else if(r===21) w = 'VEINTIÚN'; }
+      p.push(w);
+    } else {
+      const d = Math.floor(r/10), u = r%10;
+      p.push(L_DEC[d] + (u ? ' Y ' + ((apocope && u===1) ? 'UN' : L_UNI[u]) : ''));
+    }
+  }
+  return p.join(' ');
+}
+function letrasSeccion(n, apocope){
+  const miles = Math.floor(n/1000), r = n%1000, p = [];
+  if(miles) p.push(miles===1 ? 'MIL' : letrasMenorMil(miles,true) + ' MIL');
+  if(r) p.push(letrasMenorMil(r, apocope));
+  return p.join(' ');
+}
+function enteroALetras(n){
+  if(n===0) return 'CERO';
+  const mill = Math.floor(n/1e6), resto = n%1e6, p = [];
+  if(mill) p.push(mill===1 ? 'UN MILLÓN' : letrasSeccion(mill,true) + ' MILLONES');
+  if(resto) p.push(letrasSeccion(resto,false));
+  return p.join(' ');
+}
+function montoEnLetras(monto, moneda){
+  const ent = Math.floor(redondear(monto)), cent = Math.round((redondear(monto)-ent)*100);
+  let t = (moneda==='USD' ? 'DÓLARES ESTADOUNIDENSES ' : 'PESOS ') + enteroALetras(ent);
+  if(cent) t += ' CON ' + String(cent).padStart(2,'0') + '/100';
+  return t;
+}
+
+/* ---------- mensajes de WhatsApp ---------- */
+function montoTexto(cuota){
+  const m = cuota.moneda, pag = pagadoDe(cuota);
+  return pag>0
+    ? `saldo pendiente ${fmtMonto(saldoDe(cuota),m)} de ${fmtMonto(cuota.monto,m)}`
+    : fmtMonto(cuota.monto,m);
+}
 function mensajeProximaVencer(cliente, cuota){
   const dias = diasHasta(cuota.vence);
   const cuando = dias<=0 ? 'hoy' : `en ${dias} día${dias===1?'':'s'}`;
-  return `Hola ${cliente.nombre}! Te escribimos de YAM Automotores para recordarte que la cuota N°${cuota.numero} de tu ${cliente.vehiculo} (${fmtMonto(cuota.monto)}) vence ${cuando}, el ${fechaStr(cuota.vence)}. Cualquier consulta, escribinos por acá. ¡Gracias!`;
+  return `Hola ${cliente.nombre}! Te escribimos de YAM Automotores para recordarte que la cuota N°${cuota.numero} de tu ${cliente.vehiculo} (${montoTexto(cuota)}) vence ${cuando}, el ${fechaStr(cuota.vence)}. Cualquier consulta, escribinos por acá. ¡Gracias!`;
 }
 function mensajeVencida(cliente, cuota){
   const dias = Math.abs(diasHasta(cuota.vence));
-  return `Hola ${cliente.nombre}, te contactamos de YAM Automotores porque la cuota N°${cuota.numero} de tu ${cliente.vehiculo} (${fmtMonto(cuota.monto)}) venció el ${fechaStr(cuota.vence)} (hace ${dias} día${dias===1?'':'s'}). Te pedimos que la regularices a la brevedad para evitar inconvenientes. Si ya la abonaste o necesitás coordinar algo, contanos. ¡Gracias!`;
+  return `Hola ${cliente.nombre}, te contactamos de YAM Automotores porque la cuota N°${cuota.numero} de tu ${cliente.vehiculo} (${montoTexto(cuota)}) venció el ${fechaStr(cuota.vence)} (hace ${dias} día${dias===1?'':'s'}). Te pedimos que la regularices a la brevedad para evitar inconvenientes. Si ya la abonaste o necesitás coordinar algo, contanos. ¡Gracias!`;
 }
 function armarMensaje(cliente, cuota){
   return cuota.estado==='vencida' ? mensajeVencida(cliente, cuota) : mensajeProximaVencer(cliente, cuota);
 }
-function mensajeComprobante(cliente, cuota){
-  const total = cliente.cuotas.length;
-  const cuando = cuota.fechaPago ? `, abonada el ${fechaStr(cuota.fechaPago)}` : '';
-  return `Hola ${cliente.nombre}! Te enviamos el comprobante de pago de la cuota N°${cuota.numero} de ${total} de tu ${cliente.vehiculo} (${fmtMonto(cuota.monto)})${cuando}. ¡Gracias! — YAM Automotores`;
-}
 
-/* ---------- comprobante de pago ---------- */
-function datosComprobante(cliente, cuota){
+/* ---------- comprobante de pago (total, parcial o cancelación del saldo) ---------- */
+function datosComprobante(cliente, cuota, pagoIdx){
+  const pagos = cuota.pagos || [];
+  const idx = (pagoIdx==null || pagoIdx<0 || pagoIdx>=pagos.length) ? pagos.length-1 : pagoIdx;
+  const pago = pagos[idx] || {monto:cuota.monto, fecha:null};
+  const previo = redondear(pagos.slice(0,Math.max(idx,0)).reduce((a,p)=>a+p.monto,0));
+  const saldo = Math.max(0, redondear(cuota.monto - previo - pago.monto));
+  const tipo = saldo>0 ? 'parcial' : (previo>0 ? 'cancelada' : 'pagada');
   const total = cliente.cuotas.length;
   const pagadas = cliente.cuotas.filter(q=>q.estado==='pagada').length;
+  const m = monedaOk(cuota.moneda);
   return {
-    cliente: cliente.nombre, dni: cliente.dni || '-',
+    tipo, cliente: cliente.nombre, dni: cliente.dni || '-',
     vehiculo: cliente.vehiculo, patente: cliente.patente || '-',
-    numero: cuota.numero, total, monto: fmtMonto(cuota.monto),
+    numero: cuota.numero, total, moneda:m,
+    monto: fmtMonto(pago.monto,m), montoCuota: fmtMonto(cuota.monto,m),
+    previo: previo>0 ? fmtMonto(previo,m) : null,
+    saldo: saldo>0 ? fmtMonto(saldo,m) : null,
     vence: fechaStr(cuota.vence),
-    fechaPago: cuota.fechaPago ? fechaStr(cuota.fechaPago) : 'No registrada',
+    fechaPago: pago.fecha ? fechaStr(pago.fecha) : 'No registrada',
     pagadas, restantes: total - pagadas
   };
+}
+function mensajeComprobante(cliente, cuota, pagoIdx){
+  const d = datosComprobante(cliente, cuota, pagoIdx);
+  const cuando = d.fechaPago!=='No registrada' ? `, abonado el ${d.fechaPago}` : '';
+  const base = `Hola ${cliente.nombre}! Te enviamos el comprobante de pago de la cuota N°${d.numero} de ${d.total} de tu ${cliente.vehiculo}`;
+  if(d.tipo==='parcial')
+    return `${base}. Recibimos ${d.monto}${cuando}. Recordá que te queda un importe pendiente de ${d.saldo} para cancelar la cuota. ¡Gracias! — YAM Automotores`;
+  if(d.tipo==='cancelada')
+    return `${base}. Recibimos ${d.monto}${cuando}, que cancela el saldo de la cuota (total ${d.montoCuota}). ¡Gracias! — YAM Automotores`;
+  return `${base} (${d.monto})${cuando}. ¡Gracias! — YAM Automotores`;
 }
 
 function construirPdfComprobante(JsPDF, d, logo){
@@ -835,23 +1228,34 @@ function construirPdfComprobante(JsPDF, d, logo){
   doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(180,185,195);
   doc.text('COMPROBANTE DE PAGO', tx, 27);
 
-  let y = 58;
+  let y = 56;
   doc.setTextColor(11,13,18); doc.setFont('helvetica','bold'); doc.setFontSize(12);
   doc.text(`CUOTA N° ${d.numero} DE ${d.total}`, M, y);
-  doc.setFillColor(30,111,217); doc.roundedRect(W-M-24, y-6, 24, 8.5, 2, 2, 'F');
-  doc.setTextColor(255,255,255); doc.setFontSize(9);
-  doc.text('PAGADA', W-M-12, y-0.4, {align:'center'});
+  const etiqueta = d.tipo==='parcial' ? 'PAGO PARCIAL' : d.tipo==='cancelada' ? 'CUOTA CANCELADA' : 'PAGADA';
+  doc.setFontSize(9);
+  const bw = doc.getTextWidth(etiqueta) + 8;
+  if(d.tipo==='parcial'){ doc.setFillColor(224,169,58); doc.setTextColor(11,13,18); }
+  else { doc.setFillColor(30,111,217); doc.setTextColor(255,255,255); }
+  doc.roundedRect(W-M-bw, y-6, bw, 8.5, 2, 2, 'F');
+  doc.text(etiqueta, W-M-bw/2, y-0.4, {align:'center'});
 
-  y += 14;
-  doc.setTextColor(11,13,18); doc.setFontSize(26);
+  y += 11;
+  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(107,114,128);
+  doc.text('IMPORTE ABONADO', M, y);
+  y += 9;
+  doc.setTextColor(11,13,18); doc.setFont('helvetica','bold'); doc.setFontSize(26);
   doc.text(limpio(d.monto), M, y);
-  y += 8;
+  y += 7;
 
   const filas = [
     ['Cliente', d.cliente], ['DNI', d.dni], ['Vehículo', d.vehiculo], ['Patente', d.patente],
-    ['Fecha de pago', d.fechaPago], ['Vencimiento', d.vence],
-    ['Cuotas pagadas', `${d.pagadas} de ${d.total}`], ['Cuotas restantes', String(d.restantes)]
+    ['Fecha de pago', d.fechaPago], ['Vencimiento', d.vence], ['Importe de la cuota', d.montoCuota]
   ];
+  if(d.tipo==='cancelada'){
+    filas.push(['Pagos anteriores', d.previo]);
+  } else if(d.tipo==='pagada'){
+    filas.push(['Cuotas pagadas', `${d.pagadas} de ${d.total}`], ['Cuotas restantes', String(d.restantes)]);
+  }
   doc.setFontSize(10);
   filas.forEach(([k,v])=>{
     doc.setDrawColor(225,228,233); doc.line(M, y, W-M, y);
@@ -864,12 +1268,155 @@ function construirPdfComprobante(JsPDF, d, logo){
   });
   doc.setDrawColor(225,228,233); doc.line(M, y, W-M, y);
 
+  if(d.tipo==='parcial'){
+    y += 6;
+    doc.setFillColor(253,244,222); doc.setDrawColor(224,169,58);
+    doc.roundedRect(M, y, W-2*M, 24, 2, 2, 'FD');
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(146,100,10);
+    doc.text('SALDO PENDIENTE DE ESTA CUOTA', M+4, y+6.5);
+    doc.setFontSize(17); doc.setTextColor(11,13,18);
+    doc.text(limpio(d.saldo), M+4, y+15);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(90,90,90);
+    doc.text('Recordá abonarlo para cancelar la cuota.', M+4, y+21);
+  }
+
   doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(107,114,128);
   doc.text('Documento no válido como factura. Conservá este comprobante.', M, 196);
   doc.text('¡Gracias por tu pago!', M, 201);
   return doc;
 }
+
+/* ---------- pagarés: generación de los items (uno por cuota) ---------- */
+function generarItemsPagares(cliente, alcance){
+  const total = cliente.cuotas.length;
+  return cliente.cuotas
+    .filter(q => alcance==='impagas' ? q.estado!=='pagada' : true)
+    .map(q=>({
+      cuota:q.numero, de:total, vence:q.vence, monto:q.monto, moneda:monedaOk(q.moneda),
+      letras: montoEnLetras(q.monto, q.moneda)
+    }));
+}
 /*PURE_END*/
+
+/*DOCS_START*/
+/* ---------- documentos guardados dentro del cliente (se serializan con conversores inyectados) ---------- */
+function docsADatos(d, toTs){
+  if(!d) return null;
+  const ts = x => x ? toTs(x) : null;
+  const c = d.config;
+  return {
+    config: {
+      vendedor:c.vendedor||'', vendedorDoc:c.vendedorDoc||'', vendedorDom:c.vendedorDom||'',
+      beneficiario:c.beneficiario||'', lugarPago:c.lugarPago||'', ciudadEmision:c.ciudadEmision||'',
+      ciudadPago:c.ciudadPago||'', valorRecibido:c.valorRecibido||'', fechaEmision: ts(c.fechaEmision)
+    },
+    firmantes: (d.firmantes||[]).map(f=>({nombre:f.nombre||'', dni:f.dni||'', telefono:f.telefono||'', calle:f.calle||'', localidad:f.localidad||''})),
+    pagares: d.pagares ? {
+      generadoEl: ts(d.pagares.generadoEl),
+      items: d.pagares.items.map(i=>({cuota:i.cuota, de:i.de, vence:ts(i.vence), monto:i.monto, moneda:i.moneda, letras:i.letras}))
+    } : null,
+    contrato: d.contrato ? {
+      generadoEl: ts(d.contrato.generadoEl), primeraCuota: ts(d.contrato.primeraCuota),
+      vehiculo:d.contrato.vehiculo||'', patente:d.contrato.patente||'', motor:d.contrato.motor||'', chasis:d.contrato.chasis||'',
+      precio: d.contrato.precio ? {monto:d.contrato.precio.monto, moneda:d.contrato.precio.moneda} : null,
+      anticipo: d.contrato.anticipo ? {monto:d.contrato.anticipo.monto, moneda:d.contrato.anticipo.moneda} : null,
+      transferencia: d.contrato.transferencia || 'cancelacion',
+      tramos: d.contrato.tramos.map(t=>({cantidad:t.cantidad, monto:t.monto, moneda:t.moneda}))
+    } : null
+  };
+}
+function docsDesdeDatos(r, toDate){
+  if(!r || !r.config) return null;
+  const dt = x => x ? toDate(x) : null;
+  return {
+    config: {...r.config, fechaEmision: dt(r.config.fechaEmision)},
+    firmantes: (r.firmantes||[]).map(f=>({...f})),
+    pagares: r.pagares ? {generadoEl: dt(r.pagares.generadoEl), items: (r.pagares.items||[]).map(i=>({...i, vence: dt(i.vence)}))} : null,
+    contrato: r.contrato ? {...r.contrato, generadoEl: dt(r.contrato.generadoEl), primeraCuota: dt(r.contrato.primeraCuota), tramos:(r.contrato.tramos||[]).map(t=>({...t}))} : null
+  };
+}
+
+/* ---------- pagaré (formato tomado del modelo del cliente; 2 firmantes) ---------- */
+function htmlFirmante(f){
+  f = f || {};
+  const v = x => x ? esc(x) : '&nbsp;';
+  return `<div class="pg-firm">
+    <div class="pg-fr"><b>FIRMANTE:</b> ${v(f.nombre)}</div>
+    <div class="pg-fr"><b>D.N.I.:</b> ${v(f.dni)}</div>
+    <div class="pg-fr"><b>CALLE:</b> ${v(f.calle)}</div>
+    <div class="pg-fr"><b>LOCALIDAD:</b> ${v(f.localidad)}</div>
+    <div class="pg-fr"><b>TEL:</b> ${v(f.telefono)}</div>
+    <div class="pg-firma">FIRMA</div>
+    <div class="pg-aclar">ACLARACIÓN:</div>
+  </div>`;
+}
+function htmlPagare(item, doc, cuota){
+  const cfg = doc.config, f = doc.firmantes || [];
+  const em = cfg.fechaEmision;
+  let sello = '';
+  if(cuota){
+    if(cuota.estado==='pagada'){
+      const fp = fechaPagoDe(cuota);
+      sello = `<div class="pg-sello pagado">PAGADO${fp ? `<small>${esc(fechaStr(fp))}</small>` : ''}</div>`;
+    } else if(pagadoDe(cuota)>0){
+      sello = `<div class="pg-sello parcial">PAGO PARCIAL<small>RESTA ${esc(fmtMonto(saldoDe(cuota), cuota.moneda))}</small></div>`;
+    }
+  }
+  return `<div class="pagare">
+    ${sello}
+    <div class="pg-top">
+      <div><div>SELLADO <span class="pg-line pg-w120">&nbsp;</span></div><div>Nº <span class="pg-line pg-w120">${item.cuota}/${item.de}</span></div></div>
+      <div>VENCE EL: <span class="pg-line pg-w220">${esc(fechaLarga(item.vence))}</span></div>
+    </div>
+    <div class="pg-row">
+      <div>${esc(cfg.ciudadEmision)} &nbsp; <span class="pg-line">${em.getDate()}</span> DE <span class="pg-line pg-w100">${MESES_UP[em.getMonth()]}</span> DE <span class="pg-line">${em.getFullYear()}</span></div>
+      <div>POR: <span class="pg-line pg-w160">${esc(fmtMonto(item.monto, item.moneda))}</span></div>
+    </div>
+    <p class="pg-texto">PAGARÉ/MOS SIN PROTESTO (ART. 50 LEY 5965/63) AL SEÑOR/ES <u>${esc(cfg.beneficiario)}</u> O A SU ORDEN, LA CANTIDAD DE <u>${esc(item.letras)}</u> POR IGUAL VALOR RECIBIDO EN <u>${esc(cfg.valorRecibido)}</u> A NUESTRA ENTERA SATISFACCIÓN PAGADERO EN LA CALLE ${esc(cfg.lugarPago)} DE LA CIUDAD DE ${esc(cfg.ciudadPago)}.</p>
+    <div class="pg-firmantes">${htmlFirmante(f[0])}${htmlFirmante(f[1])}</div>
+  </div>`;
+}
+
+/* ---------- contrato de compraventa (modelo base: revisar con abogado/escribano) ---------- */
+function htmlContrato(cliente){
+  const d = cliente.documentos, cfg = d.config, ct = d.contrato;
+  const comp = (d.firmantes||[]).filter(x=>x.nombre);
+  const fe = cfg.fechaEmision;
+  const dom = x => [x.calle, x.localidad].filter(Boolean).join(', ') || '____________';
+  const persona = x => `${esc(x.nombre)}, D.N.I. ${esc(x.dni || '__________')}, con domicilio en ${esc(dom(x))}`;
+  const varios = comp.length > 1;
+  const rolC = varios ? 'LOS COMPRADORES' : 'EL COMPRADOR';
+  const nCuotas = ct.tramos.reduce((a,t)=>a+t.cantidad,0);
+  const monedas = [...new Set(ct.tramos.map(t=>t.moneda))];
+  const monedaTxt = monedas.map(m=>m==='USD' ? 'DÓLARES ESTADOUNIDENSES' : 'PESOS ARGENTINOS').join(' y ');
+  const precioTxt = ct.precio ? `El precio total de la operación se fija en ${esc(fmtMonto(ct.precio.monto, ct.precio.moneda))} (${esc(montoEnLetras(ct.precio.monto, ct.precio.moneda))}). ` : '';
+  const anticipoTxt = (ct.anticipo && ct.anticipo.monto>0)
+    ? `${rolC} abona en este acto, en concepto de anticipo, la suma de ${esc(fmtMonto(ct.anticipo.monto, ct.anticipo.moneda))} (${esc(montoEnLetras(ct.anticipo.monto, ct.anticipo.moneda))}), sirviendo el presente de suficiente recibo. ` : '';
+  const transf = ct.transferencia==='acto'
+    ? 'La transferencia registral del dominio a favor de ' + rolC + ' se realiza en este acto, firmando las partes la documentación correspondiente. Los gastos, sellados y honorarios de la transferencia son a cargo de ' + rolC + '.'
+    : 'La transferencia registral del dominio a favor de ' + rolC + ' se realizará una vez cancelada la totalidad de las cuotas pactadas, obligándose EL VENDEDOR a entregar en ese momento la documentación necesaria. Los gastos, sellados y honorarios de la transferencia son a cargo de ' + rolC + '.';
+  const clausulas = [
+    ['PRIMERA: OBJETO', `EL VENDEDOR vende a ${rolC}, quien compra, el automotor ${esc(ct.vehiculo)}, dominio ${esc(ct.patente || '__________')}, motor N° ${esc(ct.motor || '__________')}, chasis N° ${esc(ct.chasis || '__________')}, en el estado en que se encuentra, que ${rolC} declara conocer y aceptar.`],
+    ['SEGUNDA: PRECIO Y FORMA DE PAGO', `${precioTxt}${anticipoTxt}El saldo se abona en ${nCuotas} cuota${nCuotas===1?'':'s'} mensual${nCuotas===1?'':'es'} y consecutiva${nCuotas===1?'':'s'} (${esc(describirTramos(ct.tramos))}), venciendo la primera el ${esc(fechaLarga(ct.primeraCuota))} y las siguientes el mismo día de cada mes.`],
+    ['TERCERA: PAGARÉS Y MONEDA', `Las cuotas se instrumentan mediante ${nCuotas} pagaré${nCuotas===1?'':'s'} a la orden de ${esc(cfg.beneficiario)}, suscripto${nCuotas===1?'':'s'} en este acto por ${rolC}, por los importes y vencimientos indicados en cada uno, pagaderos en ${esc(cfg.lugarPago)}, ${esc(cfg.ciudadPago)}. Cada cuota se abona en la moneda en que está expresada (${monedaTxt}). La emisión de los pagarés no implica novación de la obligación.${varios ? ' Los compradores responden en forma solidaria por el cumplimiento de todas las obligaciones asumidas.' : ''}`],
+    ['CUARTA: MORA', `La falta de pago de cualquier cuota en su vencimiento produce la mora de pleno derecho, sin necesidad de interpelación judicial ni extrajudicial previa, pudiendo EL VENDEDOR exigir la cancelación total del saldo adeudado.`],
+    ['QUINTA: ENTREGA Y GASTOS', `La unidad se entrega en este acto. Desde la fecha de entrega son a cargo de ${rolC} los impuestos, patentes, seguros, infracciones, multas y todo gasto vinculado con el uso y la tenencia del automotor, así como la responsabilidad civil y penal derivada de su uso.`],
+    ['SEXTA: TRANSFERENCIA', transf],
+    ['SÉPTIMA: JURISDICCIÓN', `Las partes constituyen domicilio en los indicados en el encabezamiento y se someten a la jurisdicción de los Tribunales Ordinarios de ${esc(cfg.ciudadPago)}, renunciando a cualquier otro fuero o jurisdicción que pudiera corresponderles.`]
+  ];
+  const bloqueFirma = (rol, nombre, dni) => `<div class="ct-firma"><div class="ct-linea"></div><b>${rol}</b><div>${esc(nombre||'')}</div><div>D.N.I. ${esc(dni||'')}</div></div>`;
+  return `<div class="contrato">
+    <h1>BOLETO DE COMPRAVENTA DE AUTOMOTOR</h1>
+    <p>En ${esc(cfg.ciudadEmision)}, a los ${fe.getDate()} días del mes de ${MESES_UP[fe.getMonth()].toLowerCase()} de ${fe.getFullYear()}, entre <b>${esc(cfg.vendedor)}</b>${cfg.vendedorDoc ? ', ' + esc(cfg.vendedorDoc) : ''}, con domicilio en ${esc(cfg.vendedorDom || '____________')}, en adelante “EL VENDEDOR”, por una parte; y ${comp.map(persona).join('; y ')}, en adelante “${rolC}”, por la otra parte, convienen en celebrar el presente boleto de compraventa, que se rige por las siguientes cláusulas:</p>
+    ${clausulas.map(([t,x])=>`<p><b>${t}.</b> ${x}</p>`).join('')}
+    <p>En prueba de conformidad, se firman dos ejemplares de un mismo tenor y a un solo efecto, en el lugar y fecha indicados al comienzo.</p>
+    <div class="ct-firmas">
+      ${bloqueFirma('EL VENDEDOR', cfg.vendedor, cfg.vendedorDoc)}
+      ${comp.map((x,i)=>bloqueFirma(varios ? `COMPRADOR ${i+1}` : 'EL COMPRADOR', x.nombre, x.dni)).join('')}
+    </div>
+  </div>`;
+}
+/*DOCS_END*/
 
 /* ---------- helpers de estado ---------- */
 let _seq = 0;
@@ -883,29 +1430,43 @@ function toInputDate(d){
 function slug(s){
   return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-|-$/g,'');
 }
+const $ = id => document.getElementById(id);
 
-// Firestore guarda 'pagada' o 'pendiente'; "vencida" se calcula siempre contra la fecha de hoy
-function cuotasAFirestore(cuotas){
-  return cuotas.map(q=>({
-    numero: q.numero, monto: q.monto,
-    estado: q.estado==='pagada' ? 'pagada' : 'pendiente',
-    vence: firebase.firestore.Timestamp.fromDate(q.vence),
-    fechaPago: q.fechaPago ? firebase.firestore.Timestamp.fromDate(q.fechaPago) : null
-  }));
-}
+// Firestore guarda 'pagada' o 'pendiente' + la lista de pagos; "vencida/parcial" se calcula contra hoy
+const toDateFs = v => (v && v.toDate) ? v.toDate() : new Date(v);
+const toTsFs = d => firebase.firestore.Timestamp.fromDate(d);
+function cuotasAFirestore(cuotas){ return cuotas.map(q=>cuotaADatos(q, toTsFs)); }
 function cuotasDesdeFirestore(arr){
-  return (arr||[]).map(q=>{
-    const venceRaw = q.vence && q.vence.toDate ? q.vence.toDate() : new Date(q.vence);
-    const o = {
-      numero: q.numero, monto: q.monto,
-      vence: inicioDia(venceRaw),
-      estado: q.estado==='pagada' ? 'pagada' : 'pendiente',
-      fechaPago: q.fechaPago ? (q.fechaPago.toDate ? q.fechaPago.toDate() : new Date(q.fechaPago)) : null
-    };
-    o.estado = estadoEfectivo(o);
-    return o;
-  }).sort((a,b)=>a.numero-b.numero);
+  return (arr||[]).map(q=>cuotaDesdeDatos(q, toDateFs)).sort((a,b)=>a.numero-b.numero);
 }
+function docsAFirestore(d){ return docsADatos(d, toTsFs); }
+function docsDesdeFirestore(r){ return docsDesdeDatos(r, toDateFs); }
+
+// Todo el texto del sistema va en mayúsculas
+function normCliente(c){
+  c.nombre = up(c.nombre); c.vehiculo = up(c.vehiculo); c.patente = up(c.patente); c.dni = up(c.dni);
+  const d = c.documentos;
+  if(d){
+    (d.firmantes||[]).forEach(f=>{ f.nombre = up(f.nombre); f.calle = up(f.calle); f.localidad = up(f.localidad); f.dni = up(f.dni); });
+    Object.keys(d.config).forEach(k=>{ if(typeof d.config[k]==='string') d.config[k] = up(d.config[k]); });
+    if(d.contrato) ['vehiculo','patente','motor','chasis'].forEach(k=>{ d.contrato[k] = up(d.contrato[k]); });
+  }
+  return c;
+}
+function normVehiculo(v){ v.unidad = up(v.unidad); v.patente = up(v.patente); v.cliente = up(v.cliente); return v; }
+
+// escribe mayúsculas a medida que se tipea (en todos los campos de texto)
+document.addEventListener('input', e=>{
+  const el = e.target;
+  if(el.tagName==='INPUT' && el.type==='text'){
+    const v = el.value, u = up(v);
+    if(u!==v){
+      const s = el.selectionStart, f = el.selectionEnd;
+      el.value = u;
+      try{ el.setSelectionRange(s, f); }catch(_){}
+    }
+  }
+});
 
 /* ---------- recordatorio por WhatsApp ---------- */
 let recActual = null;
@@ -923,17 +1484,17 @@ function abrirRecordatorioId(clienteId, numero){
 function abrirRecordatorio(cliente, cuota){
   recActual = {cliente};
   const esVencida = cuota.estado==='vencida';
-  document.getElementById('rec-titulo').textContent = esVencida ? 'Recordatorio — cuota vencida' : 'Recordatorio — cuota próxima a vencer';
-  document.getElementById('rec-destinatario').value = `${cliente.nombre} · ${cliente.telefono}`;
-  document.getElementById('rec-texto').value = armarMensaje(cliente, cuota);
+  $('rec-titulo').textContent = esVencida ? 'Recordatorio — cuota vencida' : 'Recordatorio — cuota próxima a vencer';
+  $('rec-destinatario').value = `${cliente.nombre} · ${cliente.telefono}`;
+  $('rec-texto').value = armarMensaje(cliente, cuota);
   abrirModal('modalRecordatorio');
 }
 function enviarRecordatorioWa(){
   if(!recActual) return;
-  abrirWa(recActual.cliente.telefono, document.getElementById('rec-texto').value);
+  abrirWa(recActual.cliente.telefono, $('rec-texto').value);
 }
 function copiarMensaje(){
-  const ta = document.getElementById('rec-texto');
+  const ta = $('rec-texto');
   ta.select();
   if(navigator.clipboard && navigator.clipboard.writeText){
     navigator.clipboard.writeText(ta.value).then(()=>mostrarToast('Mensaje copiado al portapapeles'))
@@ -970,17 +1531,24 @@ function obtenerLogoChico(){
   });
 }
 
-async function abrirComprobante(clienteId, numero){
+async function abrirComprobante(clienteId, numero, pagoIdx){
   const c = clienteById(clienteId);
   const q = c && c.cuotas.find(x=>x.numero===numero);
   if(!q) return;
-  const mio = {cliente:c, cuota:q, blob:null, archivo:`Comprobante-YAM-cuota-${q.numero}-${slug(c.nombre)}.pdf`};
+  if(!(q.pagos||[]).length){ mostrarToast('Esa cuota todavía no tiene pagos registrados'); return; }
+  const idx = (pagoIdx==null || pagoIdx<0 || pagoIdx>=q.pagos.length) ? q.pagos.length-1 : pagoIdx;
+  const mio = {cliente:c, cuota:q, idx, blob:null,
+    archivo:`Comprobante-YAM-cuota-${q.numero}${q.pagos.length>1 ? '-pago'+(idx+1) : ''}-${slug(c.nombre)}.pdf`};
   compActual = mio;
-  const d = datosComprobante(c, q);
+  const d = datosComprobante(c, q, idx);
   const logo = await obtenerLogoChico();
   if(compActual !== mio) return;
 
-  document.getElementById('comp-preview').innerHTML = `
+  const etiqueta = d.tipo==='parcial' ? 'PAGO PARCIAL' : d.tipo==='cancelada' ? 'CUOTA CANCELADA' : 'PAGADA';
+  const filas = [['Cliente',d.cliente],['DNI',d.dni],['Vehículo',d.vehiculo],['Patente',d.patente],['Fecha de pago',d.fechaPago],['Vencimiento',d.vence],['Importe de la cuota',d.montoCuota]];
+  if(d.tipo==='cancelada') filas.push(['Pagos anteriores', d.previo]);
+  if(d.tipo==='pagada') filas.push(['Cuotas pagadas', `${d.pagadas} de ${d.total}`], ['Cuotas restantes', String(d.restantes)]);
+  $('comp-preview').innerHTML = `
     <div class="receipt">
       <div class="receipt-head">
         ${logo ? `<img src="${logo}" alt="">` : ''}
@@ -988,17 +1556,11 @@ async function abrirComprobante(clienteId, numero){
       </div>
       <div class="receipt-body">
         <div class="receipt-amount">
-          <div><small style="color:#6b7280;">CUOTA N° ${d.numero} DE ${d.total}</small><div class="monto">${esc(d.monto)}</div></div>
-          <span class="receipt-paid">PAGADA</span>
+          <div><small style="color:#6b7280;">CUOTA N° ${d.numero} DE ${d.total} · IMPORTE ABONADO</small><div class="monto">${esc(d.monto)}</div></div>
+          <span class="receipt-paid ${d.tipo==='parcial' ? 'parcial' : ''}">${etiqueta}</span>
         </div>
-        <div class="receipt-row"><span>Cliente</span><span>${esc(d.cliente)}</span></div>
-        <div class="receipt-row"><span>DNI</span><span>${esc(d.dni)}</span></div>
-        <div class="receipt-row"><span>Vehículo</span><span>${esc(d.vehiculo)}</span></div>
-        <div class="receipt-row"><span>Patente</span><span>${esc(d.patente)}</span></div>
-        <div class="receipt-row"><span>Fecha de pago</span><span>${esc(d.fechaPago)}</span></div>
-        <div class="receipt-row"><span>Vencimiento</span><span>${esc(d.vence)}</span></div>
-        <div class="receipt-row"><span>Cuotas pagadas</span><span>${d.pagadas} de ${d.total}</span></div>
-        <div class="receipt-row"><span>Cuotas restantes</span><span>${d.restantes}</span></div>
+        ${filas.map(([k,v])=>`<div class="receipt-row"><span>${k}</span><span>${esc(v)}</span></div>`).join('')}
+        ${d.tipo==='parcial' ? `<div class="receipt-saldo"><small>SALDO PENDIENTE DE ESTA CUOTA</small><b>${esc(d.saldo)}</b><span>Recordá abonarlo para cancelar la cuota.</span></div>` : ''}
       </div>
       <div class="receipt-foot">Documento no válido como factura.</div>
     </div>`;
@@ -1026,8 +1588,8 @@ function descargarComprobante(){
 }
 async function enviarComprobanteWa(){
   if(!compActual) return;
-  const {cliente, cuota, blob, archivo} = compActual;
-  const texto = mensajeComprobante(cliente, cuota);
+  const {cliente, cuota, idx, blob, archivo} = compActual;
+  const texto = mensajeComprobante(cliente, cuota, idx);
   if(blob){
     const file = new File([blob], archivo, {type:'application/pdf'});
     if(navigator.canShare && navigator.canShare({files:[file]})){
@@ -1112,31 +1674,36 @@ function initOdometers(){
   });
 }
 
+/* ---------- dashboard: cobrado, por financiación, próximos vencimientos ---------- */
+function pagosDeTodos(){
+  const out = [];
+  clientes.forEach(c=>c.cuotas.forEach(q=>(q.pagos||[]).forEach(p=>{
+    out.push({cliente:c, cuota:q, monto:p.monto, moneda:q.moneda, fecha:p.fecha || q.vence, grupo:c.financiacion || 'sin'});
+  })));
+  return out;
+}
+function coincideFin(c, fin){
+  if(fin==='todas') return true;
+  if(fin==='sin') return !c.financiacion;
+  return c.financiacion===fin;
+}
+
 function renderStats(){
   const totalClientes = clientes.length;
   const totalVendidas = vehiculosInventario.filter(v=>v.estado==='vendido').length;
   const totalDisponibles = vehiculosInventario.filter(v=>v.estado==='disponible').length;
-
-  let cobradoMes = 0, vencidas = 0;
-  clientes.forEach(c=>{
-    c.cuotas.forEach(q=>{
-      if(q.estado==='vencida') vencidas++;
-      const fCobro = q.fechaPago || q.vence;
-      if(q.estado==='pagada' && fCobro.getMonth()===HOY.getMonth() && fCobro.getFullYear()===HOY.getFullYear()){
-        cobradoMes += q.monto;
-      }
-    });
-  });
+  let vencidas = 0;
+  clientes.forEach(c=>c.cuotas.forEach(q=>{ if(q.estado==='vencida') vencidas++; }));
+  const cobrado = totalPorMoneda(pagosDeTodos().filter(p=>mesKey(p.fecha)===mesKey(HOY)), p=>p.monto);
 
   const cards = [
     {label:'Unidades vendidas', value:totalVendidas, money:false, sub:`de ${vehiculosInventario.length} totales`, cls:''},
     {label:'Unidades disponibles', value:totalDisponibles, money:false, sub:'en stock', cls:''},
     {label:'Clientes activos', value:totalClientes, money:false, sub:'con plan vigente', cls:''},
-    {label:'Cobrado este mes', value:cobradoMes, money:true, sub:'cuotas pagadas', cls:''},
+    {label:'Cobrado este mes', value:cobrado.ARS, money:true, sub: cobrado.USD>0 ? `+ ${fmtMonto(cobrado.USD,'USD')}` : 'cuotas pagadas', cls:''},
     {label:'Cuotas vencidas', value:vencidas, money:false, sub:'requieren reclamo', cls: vencidas>0 ? 'alert':''},
   ];
-
-  document.getElementById('statsGrid').innerHTML = cards.map(c=>`
+  $('statsGrid').innerHTML = cards.map(c=>`
     <div class="stat-card ${c.cls}">
       <div class="stat-label">${c.label}</div>
       <div class="stat-value"><span class="odometer" data-target="${c.value}" data-money="${c.money?1:0}">0</span> <sub>${c.sub}</sub></div>
@@ -1145,28 +1712,64 @@ function renderStats(){
   initOdometers();
 }
 
-/* ---------- render: próximos vencimientos (dashboard) ---------- */
-function renderProximos(){
-  let proximas = [];
-  clientes.forEach(c=>{
-    c.cuotas.forEach(q=>{
-      if(q.estado==='pendiente' || q.estado==='vencida'){
-        proximas.push({cliente:c.nombre, vehiculo:c.vehiculo, numero:q.numero, monto:q.monto, vence:q.vence, estado:q.estado});
-      }
-    });
-  });
-  proximas.sort((a,b)=>a.vence-b.vence);
-  proximas = proximas.slice(0,8);
+function poblarDashMes(){
+  const keys = new Set([mesKey(HOY)]);
+  pagosDeTodos().forEach(p=>keys.add(mesKey(p.fecha)));
+  const sorted = Array.from(keys).sort().reverse();
+  const sel = $('dashMes'), prev = sel.value;
+  sel.innerHTML = '<option value="todos">Todos los meses</option>' + sorted.map(k=>`<option value="${k}">${mesLabel(k)}</option>`).join('');
+  sel.value = (prev && (prev==='todos' || sorted.includes(prev))) ? prev : mesKey(HOY);
+}
+function setDashFin(g){
+  const s = $('dashFin');
+  s.value = (s.value===g) ? 'todas' : g;
+  renderCobrados(); renderProximos();
+}
+function renderCobrados(){
+  const mes = $('dashMes').value, fin = $('dashFin').value;
+  const pagos = pagosDeTodos().filter(p=> mes==='todos' || mesKey(p.fecha)===mes);
+  const grupos = FINANCIACIONES.concat((pagos.some(p=>p.grupo==='sin') || fin==='sin') ? ['sin'] : []);
+  $('finCards').innerHTML = grupos.map(g=>{
+    const ps = pagos.filter(p=>p.grupo===g);
+    const t = totalPorMoneda(ps, p=>p.monto);
+    const nCli = new Set(ps.map(p=>p.cliente.id)).size;
+    return `<button type="button" class="fin-card ${fin===g ? 'sel' : ''}" onclick="setDashFin('${g}')">
+      <span class="fin-nombre">${g==='sin' ? 'Sin asignar' : esc(g)}</span>
+      <span class="fin-monto">${fmtMonto(t.ARS,'ARS')}</span>
+      ${t.USD>0 ? `<span class="fin-usd">+ ${fmtMonto(t.USD,'USD')}</span>` : ''}
+      <span class="fin-sub">${ps.length} pago${ps.length===1?'':'s'} · ${nCli} cliente${nCli===1?'':'s'}</span>
+    </button>`;
+  }).join('');
+  const sel = pagos.filter(p=> fin==='todas' || p.grupo===fin);
+  const quien = fin==='todas' ? 'total' : (fin==='sin' ? 'sin asignar' : fin);
+  const cuando = mes==='todos' ? 'todos los meses' : mesLabel(mes);
+  $('dashTotal').textContent = `Cobrado (${quien}) · ${cuando}: ${resumenMontos(totalPorMoneda(sel, p=>p.monto))}`;
+}
 
-  document.getElementById('proximosBody').innerHTML = proximas.map(p=>{
-    const dias = diasHasta(p.vence);
-    const cuando = p.estado==='vencida' ? `Venció hace ${Math.abs(dias)}d` : (dias===0 ? 'Vence hoy' : `En ${dias}d`);
+function renderProximos(){
+  const fin = $('dashFin').value;
+  let proximas = [];
+  clientes.filter(c=>coincideFin(c, fin)).forEach(c=>c.cuotas.forEach(q=>{
+    if(q.estado!=='pagada') proximas.push({cliente:c.nombre, vehiculo:c.vehiculo, q});
+  }));
+  proximas.sort((a,b)=>a.q.vence-b.q.vence);
+  proximas = proximas.slice(0,8);
+  $('proxFinLabel').textContent = fin==='todas' ? '' : ' — ' + (fin==='sin' ? 'SIN ASIGNAR' : fin);
+  const nombres = {vencida:'Vencida', parcial:'Parcial', pendiente:'Pendiente'};
+  if(!proximas.length){
+    $('proximosBody').innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--gray); padding:28px;">No hay cuotas pendientes.</td></tr>`;
+    return;
+  }
+  $('proximosBody').innerHTML = proximas.map(({cliente, vehiculo, q})=>{
+    const dias = diasHasta(q.vence);
+    const cuando = q.estado==='vencida' ? `Venció hace ${Math.abs(dias)}d` : (dias===0 ? 'Vence hoy' : `En ${dias}d`);
+    const conPagos = pagadoDe(q)>0;
     return `<tr>
-      <td>${esc(p.cliente)}</td>
-      <td>${esc(p.vehiculo)}</td>
-      <td class="mono">Cuota ${p.numero} — ${fmtMonto(p.monto)}</td>
-      <td>${fechaStr(p.vence)} <span style="color:var(--gray)">(${cuando})</span></td>
-      <td><span class="estado-dot ${p.estado}">${p.estado==='vencida'?'Vencida':'Pendiente'}</span></td>
+      <td>${esc(cliente)}</td>
+      <td>${esc(vehiculo)}</td>
+      <td class="mono">Cuota ${q.numero} — ${fmtMonto(saldoDe(q), q.moneda)}${conPagos ? ' <span style="color:var(--gray)">(saldo)</span>' : ''}</td>
+      <td>${fechaStr(q.vence)} <span style="color:var(--gray)">(${cuando})</span></td>
+      <td><span class="estado-dot ${q.estado}">${nombres[q.estado]}</span></td>
     </tr>`;
   }).join('');
 }
@@ -1216,32 +1819,26 @@ function initGauges(){
 }
 
 function renderClientes(){
-  const filtro = document.getElementById('filtroFinanciacion').value;
-  const lista = clientes.filter(c=>{
-    if(filtro==='todas') return true;
-    if(filtro==='sin') return !c.financiacion;
-    return c.financiacion===filtro;
-  });
-  document.getElementById('filtroResultadosClientes').textContent = `${lista.length} cliente${lista.length===1?'':'s'}`;
+  const filtro = $('filtroFinanciacion').value;
+  const lista = clientes.filter(c=>coincideFin(c, filtro));
+  $('filtroResultadosClientes').textContent = `${lista.length} cliente${lista.length===1?'':'s'}`;
 
   if(lista.length===0){
-    document.getElementById('clientsList').innerHTML =
-      `<div style="text-align:center; color:var(--gray); padding:34px;">No hay clientes que coincidan con el filtro.</div>`;
+    $('clientsList').innerHTML = `<div style="text-align:center; color:var(--gray); padding:34px;">No hay clientes que coincidan con el filtro.</div>`;
     return;
   }
 
-  document.getElementById('clientsList').innerHTML = lista.map(c=>{
+  $('clientsList').innerHTML = lista.map(c=>{
     const pagadas = c.cuotas.filter(q=>q.estado==='pagada').length;
     const total = c.cuotas.length;
     const estado = estadoCliente(c.cuotas);
-    const proxima = c.cuotas.find(q=>q.estado==='pendiente' || q.estado==='vencida');
+    const proxima = c.cuotas.find(q=>q.estado!=='pagada');
     const badgeLabel = estado==='completado' ? 'Completado' : estado==='vencida' ? 'Cuota vencida' : 'Al día';
     const pct = total>0 ? Math.round((pagadas/total)*100) : 0;
 
     const proximaTxt = proxima
-      ? `${proxima.estado==='vencida'?'Venció':'Vence'} ${fechaStr(proxima.vence)} · ${fmtMonto(proxima.monto)}`
+      ? `${proxima.estado==='vencida'?'Venció':'Vence'} ${fechaStr(proxima.vence)} · ${fmtMonto(saldoDe(proxima), proxima.moneda)}${pagadoDe(proxima)>0 ? ' (saldo)' : ''}`
       : 'Plan completado';
-
     const botonRecordar = proxima
       ? `<button class="btn btn-primary" onclick="abrirRecordatorioId('${c.id}', ${proxima.numero})">Recordar por WhatsApp</button>`
       : '';
@@ -1264,9 +1861,7 @@ function renderClientes(){
         </div>
       </div>
       <div class="client-bottom">
-        <div class="client-meta">
-          <span>${proximaTxt}</span>
-        </div>
+        <div class="client-meta"><span>${proximaTxt}</span></div>
         <div class="actions">
           <button class="btn btn-ghost" onclick="abrirPlan('${c.id}')">Ver plan</button>
           <button class="btn btn-ghost" onclick="abrirEditarCliente('${c.id}')">Editar</button>
@@ -1306,79 +1901,109 @@ function poblarFiltroMes(){
 }
 
 function renderCuotas(){
-  const filtroMes = document.getElementById('filtroMes').value;
-  const filtroCliente = document.getElementById('filtroCliente').value.trim().toLowerCase();
-  const filtroEstado = document.getElementById('filtroEstado').value;
+  const filtroMes = $('filtroMes').value;
+  const filtroCliente = $('filtroCliente').value.trim().toLowerCase();
+  const filtroEstado = $('filtroEstado').value;
 
   let todas = [];
   clientes.forEach(c=>{
-    c.cuotas.forEach(q=>{
-      todas.push({clienteId:c.id, cliente:c.nombre, vehiculo:c.vehiculo, ...q});
-    });
+    c.cuotas.forEach(q=>{ todas.push({clienteId:c.id, cliente:c.nombre, vehiculo:c.vehiculo, q}); });
   });
-
-  todas = todas.filter(q=>{
+  todas = todas.filter(({cliente, q})=>{
     if(filtroMes !== 'todos' && mesKey(q.vence) !== filtroMes) return false;
-    if(filtroCliente && !q.cliente.toLowerCase().includes(filtroCliente)) return false;
+    if(filtroCliente && !cliente.toLowerCase().includes(filtroCliente)) return false;
     if(filtroEstado !== 'todos' && q.estado !== filtroEstado) return false;
     return true;
   });
+  todas.sort((a,b)=>a.q.vence-b.q.vence);
 
-  todas.sort((a,b)=>a.vence-b.vence);
-
-  document.getElementById('filtroResultados').textContent =
-    `${todas.length} cuota${todas.length===1?'':'s'}`;
-
+  $('filtroResultados').textContent = `${todas.length} cuota${todas.length===1?'':'s'}`;
   if(todas.length===0){
-    document.getElementById('cuotasBody').innerHTML =
-      `<tr><td colspan="6" style="text-align:center; color:var(--gray); padding:34px;">No hay cuotas que coincidan con el filtro.</td></tr>`;
+    $('cuotasBody').innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--gray); padding:34px;">No hay cuotas que coincidan con el filtro.</td></tr>`;
     return;
   }
 
-  document.getElementById('cuotasBody').innerHTML = todas.map(q=>{
-    let accion;
-    if(q.estado==='pagada'){
-      accion = `<button class="btn btn-ghost btn-sm" onclick="abrirComprobante('${q.clienteId}', ${q.numero})">Comprobante</button>`;
-    } else {
-      accion = `<div style="display:flex; gap:6px; flex-wrap:wrap;">
-        <button class="btn btn-ghost btn-sm" onclick="abrirRecordatorioId('${q.clienteId}', ${q.numero})">Recordar</button>
-        <button class="btn btn-primary btn-sm" onclick="marcarPagada('${q.clienteId}', ${q.numero})">Marcar pagada</button>
-      </div>`;
+  const nombres = {pagada:'Pagada', pendiente:'Pendiente', vencida:'Vencida', parcial:'Parcial'};
+  $('cuotasBody').innerHTML = todas.map(({clienteId, cliente, vehiculo, q})=>{
+    const btns = [];
+    if(q.estado!=='pagada'){
+      btns.push(`<button class="btn btn-ghost btn-sm" onclick="abrirRecordatorioId('${clienteId}', ${q.numero})">Recordar</button>`);
+      btns.push(`<button class="btn btn-primary btn-sm" onclick="abrirPago('${clienteId}', ${q.numero})">Registrar pago</button>`);
     }
+    if((q.pagos||[]).length) btns.push(`<button class="btn btn-ghost btn-sm" onclick="abrirComprobante('${clienteId}', ${q.numero})">Comprobante</button>`);
+    const sub = (pagadoDe(q)>0 && q.estado!=='pagada')
+      ? `<br><span class="sub-saldo">pagó ${fmtMonto(pagadoDe(q), q.moneda)} · saldo ${fmtMonto(saldoDe(q), q.moneda)}</span>` : '';
     return `<tr>
-      <td>${esc(q.cliente)}</td>
-      <td>${esc(q.vehiculo)}</td>
-      <td class="cuota-cell">CUOTA ${q.numero} — ${fmtMonto(q.monto)}</td>
+      <td>${esc(cliente)}</td>
+      <td>${esc(vehiculo)}</td>
+      <td class="cuota-cell">CUOTA ${q.numero} — ${fmtMonto(q.monto, q.moneda)}${sub}</td>
       <td>${fechaStr(q.vence)}</td>
-      <td><span class="estado-dot ${q.estado}">${q.estado.charAt(0).toUpperCase()+q.estado.slice(1)}</span></td>
-      <td>${accion}</td>
+      <td><span class="estado-dot ${q.estado}">${nombres[q.estado]}</span></td>
+      <td><div style="display:flex; gap:6px; flex-wrap:wrap;">${btns.join('')}</div></td>
     </tr>`;
   }).join('');
 }
 
-function marcarPagada(clienteId, numeroCuota){
-  const cliente = clienteById(clienteId);
-  const cuota = cliente && cliente.cuotas.find(c=>c.numero===numeroCuota);
-  if(!cuota) return;
-  cuota.estado = 'pagada';
-  cuota.fechaPago = new Date();
-  guardarCuotasCliente(clienteId);
-  actualizarTodo();
-  mostrarToast(`Cuota ${numeroCuota} de ${cliente.nombre} marcada como pagada`);
-  abrirComprobante(clienteId, numeroCuota);
+/* ---------- registrar pago (total o parcial) ---------- */
+let pagoCtx = null;
+function abrirPago(clienteId, numero){
+  const c = clienteById(clienteId);
+  const q = c && c.cuotas.find(x=>x.numero===numero);
+  if(!q) return;
+  const saldo = saldoDe(q);
+  if(saldo<=0){ mostrarToast('Esa cuota ya está pagada'); return; }
+  pagoCtx = {clienteId, numero};
+  $('pago-titulo').textContent = `Registrar pago — cuota ${numero}`;
+  $('pago-info').innerHTML = `${esc(c.nombre)}<br>Importe de la cuota: <b>${fmtMonto(q.monto, q.moneda)}</b>` +
+    (pagadoDe(q)>0 ? ` · ya pagó ${fmtMonto(pagadoDe(q), q.moneda)} · saldo <b>${fmtMonto(saldo, q.moneda)}</b>` : '');
+  $('pago-monto').value = saldo;
+  $('pago-moneda').textContent = q.moneda==='USD' ? 'Dólares (USD)' : 'Pesos argentinos (ARS)';
+  $('pago-fecha').value = toInputDate(new Date());
+  actualizarAvisoPago();
+  abrirModal('modalPago');
 }
+function actualizarAvisoPago(){
+  if(!pagoCtx) return;
+  const c = clienteById(pagoCtx.clienteId);
+  const q = c && c.cuotas.find(x=>x.numero===pagoCtx.numero);
+  if(!q) return;
+  const saldo = saldoDe(q), monto = Number($('pago-monto').value);
+  const el = $('pago-aviso');
+  if(!(monto>0)){ el.textContent = ''; el.className = 'plan-sub'; return; }
+  if(monto > saldo + 0.005){ el.textContent = `El importe supera el saldo de la cuota (${fmtMonto(saldo, q.moneda)}).`; el.className = 'plan-sub aviso-mal'; }
+  else if(monto < saldo - 0.005){ el.textContent = `Pago parcial: la cuota queda con un saldo pendiente de ${fmtMonto(saldo-monto, q.moneda)}.`; el.className = 'plan-sub aviso-parcial'; }
+  else { el.textContent = 'Con este pago la cuota queda cancelada.'; el.className = 'plan-sub aviso-ok'; }
+}
+$('pago-monto').addEventListener('input', actualizarAvisoPago);
+$('formPago').addEventListener('submit', e=>{
+  e.preventDefault();
+  if(!pagoCtx) return;
+  const c = clienteById(pagoCtx.clienteId);
+  const q = c && c.cuotas.find(x=>x.numero===pagoCtx.numero);
+  if(!q) return;
+  const monto = Number($('pago-monto').value), saldo = saldoDe(q);
+  if(!(monto>0)){ alert('Ingresá el importe que entrega el cliente.'); return; }
+  if(monto > saldo + 0.005){ alert(`El importe supera el saldo de la cuota (${fmtMonto(saldo, q.moneda)}).`); return; }
+  const fechaVal = $('pago-fecha').value;
+  registrarPago(q, Math.min(monto, saldo), fechaVal ? fechaISO(fechaVal) : new Date());
+  const clienteId = pagoCtx.clienteId, numero = pagoCtx.numero, idx = q.pagos.length-1;
+  const parcial = q.estado!=='pagada';
+  guardarCuotasCliente(clienteId);
+  cerrarModal('modalPago');
+  actualizarTodo();
+  mostrarToast(parcial ? `Pago parcial registrado (cuota ${numero})` : `Cuota ${numero} de ${c.nombre} cancelada`);
+  abrirComprobante(clienteId, numero, idx);
+});
 
-function deshacerPago(clienteId, numeroCuota){
-  const cliente = clienteById(clienteId);
-  const cuota = cliente && cliente.cuotas.find(c=>c.numero===numeroCuota);
-  if(!cuota) return;
-  if(!confirm(`¿Deshacer el pago de la cuota ${numeroCuota} de ${cliente.nombre}? Va a volver a figurar como impaga.`)) return;
-  cuota.estado = 'pendiente';
-  cuota.fechaPago = null;
-  cuota.estado = estadoEfectivo(cuota);
+function anularPagoUI(clienteId, numero, idx){
+  const c = clienteById(clienteId);
+  const q = c && c.cuotas.find(x=>x.numero===numero);
+  if(!q || !q.pagos[idx]) return;
+  if(!confirm(`¿Anular el pago de ${fmtMonto(q.pagos[idx].monto, q.moneda)} de la cuota ${numero} de ${c.nombre}?`)) return;
+  anularPago(q, idx);
   guardarCuotasCliente(clienteId);
   actualizarTodo();
-  mostrarToast(`Pago de la cuota ${numeroCuota} deshecho`);
+  mostrarToast('Pago anulado');
 }
 
 /* ---------- detalle del plan ---------- */
@@ -1393,33 +2018,39 @@ function renderPlan(){
   const c = clienteById(planAbiertoId);
   if(!c){ planAbiertoId = null; cerrarModal('modalPlan'); return; }
 
-  const pagadas = c.cuotas.filter(q=>q.estado==='pagada');
-  const impagas = c.cuotas.filter(q=>q.estado!=='pagada');
-  const montoPagado = pagadas.reduce((a,q)=>a+q.monto,0);
-  const saldo = impagas.reduce((a,q)=>a+q.monto,0);
+  const pagadas = c.cuotas.filter(q=>q.estado==='pagada').length;
+  const saldo = totalPorMoneda(c.cuotas, q=>saldoDe(q));
+  const cobrado = totalPorMoneda(c.cuotas, q=>pagadoDe(q));
   const vencidas = c.cuotas.filter(q=>q.estado==='vencida').length;
 
-  document.getElementById('plan-nombre').textContent = c.nombre;
-  document.getElementById('plan-sub').innerHTML =
+  $('plan-nombre').textContent = c.nombre;
+  $('plan-sub').innerHTML =
     `${esc(c.vehiculo)} · <span class="mono">${esc(c.patente)}</span><br>DNI ${esc(c.dni)} · ${esc(c.telefono)}` +
-    (c.financiacion ? ` · Financiación: <span class="badge-fin">${esc(c.financiacion)}</span>` : '');
-  document.getElementById('plan-resumen').innerHTML = `
-    <div><small>Cuotas pagadas</small><b>${pagadas.length} de ${c.cuotas.length}</b></div>
-    <div><small>Saldo pendiente</small><b>${fmtMonto(saldo)}</b></div>
-    <div><small>${vencidas>0 ? 'Cuotas vencidas' : 'Total pagado'}</small><b style="${vencidas>0?'color:var(--red);':''}">${vencidas>0 ? vencidas : fmtMonto(montoPagado)}</b></div>`;
+    (c.financiacion ? ` · Financiación: <span class="badge-fin">${esc(c.financiacion)}</span>` : '') +
+    `<br>Plan: ${esc(describirTramos(tramosDesdeCuotas(c.cuotas)))}`;
+  $('plan-resumen').innerHTML = `
+    <div><small>Cuotas pagadas</small><b>${pagadas} de ${c.cuotas.length}</b></div>
+    <div><small>Saldo pendiente</small><b>${esc(resumenMontos(saldo))}</b></div>
+    <div><small>${vencidas>0 ? 'Cuotas vencidas' : 'Total cobrado'}</small><b style="${vencidas>0?'color:var(--red);':''}">${vencidas>0 ? vencidas : esc(resumenMontos(cobrado))}</b></div>`;
 
-  document.getElementById('plan-body').innerHTML = c.cuotas.map(q=>{
-    const acciones = q.estado==='pagada'
-      ? `<button class="btn btn-ghost btn-sm" onclick="abrirComprobante('${c.id}', ${q.numero})">Comprobante</button>
-         <button class="btn btn-ghost btn-sm" onclick="deshacerPago('${c.id}', ${q.numero})">Deshacer</button>`
-      : `<button class="btn btn-ghost btn-sm" onclick="abrirRecordatorioId('${c.id}', ${q.numero})">Recordar</button>
-         <button class="btn btn-primary btn-sm" onclick="marcarPagada('${c.id}', ${q.numero})">Pagada</button>`;
+  const nombres = {pagada:'Pagada', pendiente:'Pendiente', vencida:'Vencida', parcial:'Parcial'};
+  $('plan-body').innerHTML = c.cuotas.map(q=>{
+    const pagos = (q.pagos||[]).length
+      ? q.pagos.map((p,i)=>`<div class="pago-line">${p.fecha ? fechaStr(p.fecha) : '—'} · ${fmtMonto(p.monto, q.moneda)}
+          <button class="btn btn-ghost btn-sm" onclick="abrirComprobante('${c.id}', ${q.numero}, ${i})">Comprobante</button>
+          <button class="btn btn-ghost btn-sm" onclick="anularPagoUI('${c.id}', ${q.numero}, ${i})">Anular</button></div>`).join('')
+      : '—';
+    const acciones = q.estado!=='pagada'
+      ? `<button class="btn btn-ghost btn-sm" onclick="abrirRecordatorioId('${c.id}', ${q.numero})">Recordar</button>
+         <button class="btn btn-primary btn-sm" onclick="abrirPago('${c.id}', ${q.numero})">Registrar pago</button>`
+      : '';
+    const saldoTxt = (pagadoDe(q)>0 && q.estado!=='pagada') ? `<br><span class="sub-saldo">saldo ${fmtMonto(saldoDe(q), q.moneda)}</span>` : '';
     return `<tr>
       <td class="mono">${q.numero}</td>
       <td>${fechaStr(q.vence)}</td>
-      <td class="mono">${fmtMonto(q.monto)}</td>
-      <td><span class="estado-dot ${q.estado}">${q.estado.charAt(0).toUpperCase()+q.estado.slice(1)}</span></td>
-      <td>${q.fechaPago ? fechaStr(q.fechaPago) : '—'}</td>
+      <td class="mono">${fmtMonto(q.monto, q.moneda)}</td>
+      <td><span class="estado-dot ${q.estado}">${nombres[q.estado]}</span>${saldoTxt}</td>
+      <td>${pagos}</td>
       <td><div style="display:flex; gap:6px; flex-wrap:wrap;">${acciones}</div></td>
     </tr>`;
   }).join('');
@@ -1534,19 +2165,65 @@ document.querySelectorAll('.modal-overlay').forEach(ov=>{
   ov.addEventListener('click', e=>{ if(e.target===ov) cerrarModal(ov.id); });
 });
 
-/* ---------- alta / edición / baja de cliente ---------- */
+/* ---------- alta / edición / baja de cliente (con tramos de cuotas) ---------- */
 let editandoClienteId = null;
 
+function filaTramo(t){
+  return `<div class="tramo-row">
+    <input type="number" class="tr-cant" min="1" step="1" placeholder="Cant." value="${t.cantidad||''}" required>
+    <span class="tr-de">×</span>
+    <input type="number" class="tr-monto" min="0.01" step="0.01" placeholder="Importe" value="${t.monto||''}" required>
+    <select class="tr-moneda">
+      <option value="ARS" ${t.moneda!=='USD' ? 'selected' : ''}>$ Pesos</option>
+      <option value="USD" ${t.moneda==='USD' ? 'selected' : ''}>US$ Dólares</option>
+    </select>
+    <button type="button" class="btn btn-ghost btn-sm tr-del" title="Quitar este tramo">✕</button>
+  </div>`;
+}
+function renderTramosForm(tramos){
+  $('fc-tramos').innerHTML = tramos.map(filaTramo).join('');
+  actualizarResumenPlan();
+}
+function agregarTramo(){
+  $('fc-tramos').insertAdjacentHTML('beforeend', filaTramo({cantidad:'', monto:'', moneda:'ARS'}));
+  actualizarResumenPlan();
+}
+function leerTramos(){
+  return [...document.querySelectorAll('#fc-tramos .tramo-row')].map(f=>({
+    cantidad: parseInt(f.querySelector('.tr-cant').value, 10),
+    monto: Number(f.querySelector('.tr-monto').value),
+    moneda: f.querySelector('.tr-moneda').value
+  }));
+}
+function actualizarResumenPlan(){
+  const tr = leerTramos().filter(t=>t.cantidad>0 && t.monto>0);
+  const n = tr.reduce((a,t)=>a+t.cantidad, 0);
+  const tot = {ARS:0, USD:0};
+  tr.forEach(t=>{ tot[t.moneda] += t.cantidad*t.monto; });
+  $('fc-resumen-plan').textContent = n ? `Total del plan: ${n} cuota${n===1?'':'s'} · ${resumenMontos(tot)}` : '';
+}
+$('fc-tramos').addEventListener('input', actualizarResumenPlan);
+$('fc-tramos').addEventListener('change', actualizarResumenPlan);
+$('fc-tramos').addEventListener('click', e=>{
+  const b = e.target.closest('.tr-del');
+  if(!b) return;
+  if(document.querySelectorAll('#fc-tramos .tramo-row').length<=1) return;
+  b.closest('.tramo-row').remove();
+  actualizarResumenPlan();
+});
+
 function setPlanCamposHabilitados(on){
-  ['fc-monto','fc-cantidad','fc-fecha','fc-pagadas'].forEach(id=>{ document.getElementById(id).disabled = !on; });
+  ['fc-fecha','fc-pagadas'].forEach(id=>{ $(id).disabled = !on; });
+  document.querySelectorAll('#fc-tramos input, #fc-tramos select, #fc-tramos button, #fc-add-tramo').forEach(el=>{ el.disabled = !on; });
 }
 function abrirNuevoCliente(){
   editandoClienteId = null;
-  document.getElementById('formCliente').reset();
-  document.getElementById('fc-titulo').textContent = 'Nuevo cliente';
-  document.getElementById('fc-guardar').textContent = 'Guardar cliente';
-  document.getElementById('fc-regenerar-wrap').style.display = 'none';
-  document.getElementById('fc-eliminar').style.display = 'none';
+  $('formCliente').reset();
+  $('fc-titulo').textContent = 'Nuevo cliente';
+  $('fc-guardar').textContent = 'Guardar cliente';
+  $('fc-regenerar-wrap').style.display = 'none';
+  $('fc-eliminar').style.display = 'none';
+  renderTramosForm([{cantidad:'', monto:'', moneda:'ARS'}]);
   setPlanCamposHabilitados(true);
   abrirModal('modalCliente');
 }
@@ -1554,49 +2231,49 @@ function abrirEditarCliente(id){
   const c = clienteById(id);
   if(!c) return;
   editandoClienteId = id;
-  document.getElementById('formCliente').reset();
-  document.getElementById('fc-titulo').textContent = 'Editar cliente';
-  document.getElementById('fc-guardar').textContent = 'Guardar cambios';
-  document.getElementById('fc-nombre').value = c.nombre || '';
-  document.getElementById('fc-dni').value = c.dni || '';
-  document.getElementById('fc-telefono').value = c.telefono || '';
-  document.getElementById('fc-vehiculo').value = c.vehiculo || '';
-  document.getElementById('fc-patente').value = (c.patente && c.patente!=='—') ? c.patente : '';
-  document.getElementById('fc-financiacion').value = c.financiacion || '';
-  const primera = c.cuotas[0];
-  document.getElementById('fc-monto').value = primera ? primera.monto : '';
-  document.getElementById('fc-cantidad').value = c.cuotas.length;
-  document.getElementById('fc-fecha').value = primera ? toInputDate(primera.vence) : '';
-  document.getElementById('fc-pagadas').value = c.cuotas.filter(q=>q.estado==='pagada').length;
-  document.getElementById('fc-regenerar').checked = false;
-  document.getElementById('fc-regenerar-wrap').style.display = 'block';
-  document.getElementById('fc-eliminar').style.display = 'inline-block';
+  $('formCliente').reset();
+  $('fc-titulo').textContent = 'Editar cliente';
+  $('fc-guardar').textContent = 'Guardar cambios';
+  $('fc-nombre').value = c.nombre || '';
+  $('fc-dni').value = c.dni || '';
+  $('fc-telefono').value = c.telefono || '';
+  $('fc-vehiculo').value = c.vehiculo || '';
+  $('fc-patente').value = (c.patente && c.patente!=='—') ? c.patente : '';
+  $('fc-financiacion').value = c.financiacion || '';
+  const tr = tramosDesdeCuotas(c.cuotas);
+  renderTramosForm(tr.length ? tr : [{cantidad:'', monto:'', moneda:'ARS'}]);
+  $('fc-fecha').value = c.cuotas[0] ? toInputDate(c.cuotas[0].vence) : '';
+  $('fc-pagadas').value = c.cuotas.filter(q=>q.estado==='pagada').length;
+  $('fc-regenerar').checked = false;
+  $('fc-regenerar-wrap').style.display = 'block';
+  $('fc-eliminar').style.display = 'inline-block';
   setPlanCamposHabilitados(false);
   abrirModal('modalCliente');
 }
-document.getElementById('fc-regenerar').addEventListener('change', e=>{
-  setPlanCamposHabilitados(e.target.checked);
-});
+$('fc-regenerar').addEventListener('change', e=>{ setPlanCamposHabilitados(e.target.checked); });
 
 function leerPlanDelForm(){
-  const monto = Number(document.getElementById('fc-monto').value);
-  const cantidad = Number(document.getElementById('fc-cantidad').value);
-  const fecha = document.getElementById('fc-fecha').value;
-  const pagadas = Number(document.getElementById('fc-pagadas').value) || 0;
-  if(!(monto>0) || !(cantidad>0) || !fecha){ alert('Completá monto, cantidad de cuotas y fecha de la primera cuota.'); return null; }
-  if(pagadas<0 || pagadas>cantidad){ alert('Las cuotas ya pagadas no pueden superar la cantidad total de cuotas.'); return null; }
-  return generarCuotas(fechaISO(fecha), cantidad, monto, pagadas);
+  const tr = leerTramos();
+  const fecha = $('fc-fecha').value;
+  const pagadas = Number($('fc-pagadas').value) || 0;
+  if(!tr.length || tr.some(t=>!(t.cantidad>0) || !(t.monto>0)) || !fecha){
+    alert('Completá la cantidad y el importe de cada tramo de cuotas y la fecha de la primera cuota.');
+    return null;
+  }
+  const total = tr.reduce((a,t)=>a+t.cantidad, 0);
+  if(pagadas<0 || pagadas>total){ alert('Las cuotas ya pagadas no pueden superar la cantidad total de cuotas.'); return null; }
+  return {cuotas: generarCuotasTramos(fechaISO(fecha), tr, pagadas), pagadas};
 }
 
-document.getElementById('formCliente').addEventListener('submit', e=>{
+$('formCliente').addEventListener('submit', e=>{
   e.preventDefault();
   const datos = {
-    nombre: document.getElementById('fc-nombre').value.trim(),
-    dni: document.getElementById('fc-dni').value.trim(),
-    telefono: document.getElementById('fc-telefono').value.trim(),
-    vehiculo: document.getElementById('fc-vehiculo').value.trim(),
-    patente: document.getElementById('fc-patente').value.trim() || '—',
-    financiacion: document.getElementById('fc-financiacion').value
+    nombre: up($('fc-nombre').value.trim()),
+    dni: up($('fc-dni').value.trim()),
+    telefono: $('fc-telefono').value.trim(),
+    vehiculo: up($('fc-vehiculo').value.trim()),
+    patente: up($('fc-patente').value.trim()) || '—',
+    financiacion: $('fc-financiacion').value
   };
 
   /* ----- edición ----- */
@@ -1604,48 +2281,44 @@ document.getElementById('formCliente').addEventListener('submit', e=>{
     const c = clienteById(editandoClienteId);
     if(!c) return;
     let cuotasNuevas = null;
-    if(document.getElementById('fc-regenerar').checked){
-      cuotasNuevas = leerPlanDelForm();
-      if(!cuotasNuevas) return;
-      // conserva la fecha de pago de las cuotas que ya estaban registradas como pagadas
-      cuotasNuevas.forEach(q=>{
-        if(q.estado==='pagada'){
-          const vieja = c.cuotas.find(x=>x.numero===q.numero && x.estado==='pagada');
-          if(vieja && vieja.fechaPago) q.fechaPago = vieja.fechaPago;
-        }
-      });
+    if($('fc-regenerar').checked){
+      const plan = leerPlanDelForm();
+      if(!plan) return;
+      cuotasNuevas = preservarPagos(c.cuotas, plan.cuotas, plan.pagadas);
     }
     const id = editandoClienteId;
+    const aviso = (cuotasNuevas && c.documentos && c.documentos.pagares)
+      ? 'Cambios guardados. El plan cambió: regenerá los pagarés en la pestaña Documentos.' : 'Cambios guardados';
     if(MODO_DEMO){
       Object.assign(c, datos);
       if(cuotasNuevas) c.cuotas = cuotasNuevas;
       ordenarClientes();
       cerrarModal('modalCliente');
       actualizarTodo();
-      mostrarToast('Cambios guardados');
+      mostrarToast(aviso);
     } else {
       const upd = {...datos};
       if(cuotasNuevas) upd.cuotas = cuotasAFirestore(cuotasNuevas);
       db.collection('yam_clientes').doc(id).update(upd).then(()=>{
         cerrarModal('modalCliente');
-        mostrarToast('Cambios guardados');
+        mostrarToast(aviso);
       }).catch(err=>alert('Error al guardar los cambios: ' + err.message));
     }
     return;
   }
 
   /* ----- alta ----- */
-  const cuotas = leerPlanDelForm();
-  if(!cuotas) return;
+  const plan = leerPlanDelForm();
+  if(!plan) return;
   if(MODO_DEMO){
-    clientes.push({id:nuevoIdLocal(), ...datos, cuotas});
+    clientes.push({id:nuevoIdLocal(), ...datos, cuotas:plan.cuotas, documentos:null});
     ordenarClientes();
     cerrarModal('modalCliente');
     actualizarTodo();
     mostrarToast(`Cliente ${datos.nombre} agregado correctamente`);
   } else {
     db.collection('yam_clientes').add({
-      ...datos, uid: ADMIN_UID, cuotas: cuotasAFirestore(cuotas)
+      ...datos, uid: ADMIN_UID, cuotas: cuotasAFirestore(plan.cuotas)
     }).then(()=>{
       cerrarModal('modalCliente');
       mostrarToast(`Cliente ${datos.nombre} agregado correctamente`);
@@ -1656,7 +2329,7 @@ document.getElementById('formCliente').addEventListener('submit', e=>{
 function eliminarClienteActual(){
   const c = clienteById(editandoClienteId);
   if(!c) return;
-  if(!confirm(`¿Eliminar a ${c.nombre} y todo su plan de cuotas? Esta acción no se puede deshacer.`)) return;
+  if(!confirm(`¿Eliminar a ${c.nombre} y todo su plan de cuotas (y sus documentos)? Esta acción no se puede deshacer.`)) return;
   const nombre = c.nombre, id = c.id;
   if(MODO_DEMO){
     clientes = clientes.filter(x=>x.id!==id);
@@ -1670,12 +2343,195 @@ function eliminarClienteActual(){
   }
 }
 
+/* ---------- pestaña Documentos: pagarés y contrato de compraventa ---------- */
+const DOCS_CFG_KEY = 'yam_docs_cfg';
+function cfgGuardada(){ try{ return JSON.parse(localStorage.getItem(DOCS_CFG_KEY) || '{}'); }catch(e){ return {}; } }
+function guardarCfg(cfg){ try{ localStorage.setItem(DOCS_CFG_KEY, JSON.stringify(cfg)); }catch(e){} }
+
+function renderDocumentos(){
+  const txt = $('filtroDocCliente').value.trim().toLowerCase();
+  const est = $('filtroDocEstado').value;
+  const lista = clientes.filter(c=>{
+    if(txt && !c.nombre.toLowerCase().includes(txt)) return false;
+    const gen = !!(c.documentos && (c.documentos.pagares || c.documentos.contrato));
+    if(est==='sin') return !gen;
+    if(est==='gen') return gen;
+    return true;
+  });
+  $('filtroResultadosDocs').textContent = `${lista.length} cliente${lista.length===1?'':'s'}`;
+  if(!lista.length){
+    $('docsList').innerHTML = `<div style="text-align:center; color:var(--gray); padding:34px;">No hay clientes que coincidan con el filtro.</div>`;
+    return;
+  }
+  $('docsList').innerHTML = lista.map(c=>{
+    const d = c.documentos, pg = d && d.pagares, ct = d && d.contrato;
+    let pagTxt = `<span class="doc-estado sin">Pagarés: sin generar</span>`;
+    if(pg){
+      const pagados = pg.items.filter(it=>{ const q = c.cuotas.find(x=>x.numero===it.cuota); return q && q.estado==='pagada'; }).length;
+      pagTxt = `<span class="doc-estado ok">Pagarés: ${pg.items.length} generado${pg.items.length===1?'':'s'} · ${pagados} pagado${pagados===1?'':'s'}</span>`;
+    }
+    const ctTxt = ct ? `<span class="doc-estado ok">Contrato: generado el ${fechaStr(ct.generadoEl)}</span>`
+                     : `<span class="doc-estado sin">Contrato: sin generar</span>`;
+    const fin = c.financiacion ? ` · <span class="badge-fin">${esc(c.financiacion)}</span>` : '';
+    return `<div class="client-card">
+      <div class="client-top">
+        <div>
+          <div class="client-name">${esc(c.nombre)}</div>
+          <div class="client-vehicle">${esc(c.vehiculo)} · <span class="mono">${esc(c.patente)}</span>${fin} · ${c.cuotas.length} cuotas</div>
+        </div>
+      </div>
+      <div class="doc-estados">${pagTxt}${ctTxt}</div>
+      <div class="client-bottom">
+        <div></div>
+        <div class="actions">
+          ${pg ? `<button class="btn btn-ghost" onclick="abrirDoc('${c.id}','pagares')">Ver pagarés</button>` : ''}
+          ${ct ? `<button class="btn btn-ghost" onclick="abrirDoc('${c.id}','contrato')">Ver contrato</button>` : ''}
+          <button class="btn ${d ? 'btn-ghost' : 'btn-primary'}" onclick="abrirGenerarDocs('${c.id}')">${d ? 'Regenerar / actualizar' : 'Generar pagarés y contrato'}</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ----- formulario de generación ----- */
+let docsClienteId = null;
+function abrirGenerarDocs(id){
+  const c = clienteById(id);
+  if(!c) return;
+  if(!c.cuotas.length){ alert('Este cliente no tiene cuotas cargadas.'); return; }
+  docsClienteId = id;
+  const prev = c.documentos, saved = cfgGuardada(), cfg = prev ? prev.config : {};
+  const g = k => (cfg[k] ? cfg[k] : (saved[k] || ''));
+  $('dg-titulo').textContent = 'Generar documentos — ' + c.nombre;
+  $('dg-vendedor').value = g('vendedor');
+  $('dg-vendedor-doc').value = g('vendedorDoc');
+  $('dg-vendedor-dom').value = g('vendedorDom');
+  $('dg-beneficiario').value = g('beneficiario') || g('vendedor');
+  $('dg-lugar-pago').value = g('lugarPago');
+  $('dg-ciudad-emision').value = g('ciudadEmision') || 'SAN RAFAEL, (MZA)';
+  $('dg-ciudad-pago').value = g('ciudadPago') || 'SAN RAFAEL, MENDOZA';
+  $('dg-valor').value = g('valorRecibido') || 'VEHÍCULO';
+  $('dg-fecha').value = toInputDate(cfg.fechaEmision || new Date());
+  const f = (prev && prev.firmantes) || [];
+  const f1 = f[0] || {nombre:c.nombre, dni:c.dni, telefono:c.telefono, calle:'', localidad:''};
+  const f2 = f[1] || {nombre:'', dni:'', telefono:'', calle:'', localidad:''};
+  [['f1',f1],['f2',f2]].forEach(([p,x])=>{
+    $(`dg-${p}-nombre`).value = x.nombre || ''; $(`dg-${p}-dni`).value = x.dni || '';
+    $(`dg-${p}-tel`).value = x.telefono || ''; $(`dg-${p}-calle`).value = x.calle || ''; $(`dg-${p}-loc`).value = x.localidad || '';
+  });
+  const ct = prev && prev.contrato;
+  $('dg-veh').value = ct ? ct.vehiculo : c.vehiculo;
+  $('dg-pat').value = ct ? ct.patente : ((c.patente && c.patente!=='—') ? c.patente : '');
+  $('dg-motor').value = ct ? ct.motor : ''; $('dg-chasis').value = ct ? ct.chasis : '';
+  $('dg-precio').value = ct && ct.precio ? ct.precio.monto : ''; $('dg-precio-mon').value = ct && ct.precio ? ct.precio.moneda : 'ARS';
+  $('dg-anticipo').value = ct && ct.anticipo ? ct.anticipo.monto : ''; $('dg-anticipo-mon').value = ct && ct.anticipo ? ct.anticipo.moneda : 'ARS';
+  $('dg-transf').value = ct ? ct.transferencia : 'cancelacion';
+  $('dg-hacer-pagares').checked = true; $('dg-hacer-contrato').checked = true;
+  $('dg-alcance').value = 'todas';
+  $('dg-resumen').textContent = `Se generará un pagaré por cada cuota (${c.cuotas.length}): ${describirTramos(tramosDesdeCuotas(c.cuotas))}.`;
+  abrirModal('modalDocs');
+}
+
+$('formDocs').addEventListener('submit', e=>{
+  e.preventDefault();
+  const c = clienteById(docsClienteId);
+  if(!c) return;
+  const hacerPag = $('dg-hacer-pagares').checked, hacerCt = $('dg-hacer-contrato').checked;
+  if(!hacerPag && !hacerCt){ alert('Elegí generar al menos los pagarés o el contrato.'); return; }
+  const v = id => up($(id).value.trim());
+  const cfg = {
+    vendedor:v('dg-vendedor'), vendedorDoc:v('dg-vendedor-doc'), vendedorDom:v('dg-vendedor-dom'),
+    beneficiario:v('dg-beneficiario'), lugarPago:v('dg-lugar-pago'),
+    ciudadEmision:v('dg-ciudad-emision'), ciudadPago:v('dg-ciudad-pago'), valorRecibido:v('dg-valor'),
+    fechaEmision: $('dg-fecha').value ? fechaISO($('dg-fecha').value) : new Date()
+  };
+  const firmante = p => ({nombre:v(`dg-${p}-nombre`), dni:v(`dg-${p}-dni`), telefono:$(`dg-${p}-tel`).value.trim(), calle:v(`dg-${p}-calle`), localidad:v(`dg-${p}-loc`)});
+  const firmantes = [firmante('f1')];
+  const f2 = firmante('f2'); if(f2.nombre) firmantes.push(f2);
+  if(!firmantes[0].nombre){ alert('Completá el nombre del primer firmante.'); return; }
+  if(hacerPag && (!cfg.beneficiario || !cfg.lugarPago || !cfg.ciudadEmision || !cfg.ciudadPago)){ alert('Para los pagarés completá: a la orden de, lugar de pago y las ciudades.'); return; }
+  if(hacerCt && !cfg.vendedor){ alert('Para el contrato completá los datos del vendedor.'); return; }
+
+  const prev = c.documentos || {};
+  if(hacerPag && prev.pagares && !confirm('Ya hay pagarés generados para este cliente. Se van a reemplazar por los nuevos (si ya los imprimiste o firmaste, no coincidirían). ¿Continuar?')) return;
+  if(hacerCt && prev.contrato && !confirm('Ya hay un contrato generado. Se va a reemplazar. ¿Continuar?')) return;
+
+  const ahora = new Date();
+  const nuevo = {config:cfg, firmantes, pagares:prev.pagares || null, contrato:prev.contrato || null};
+  if(hacerPag){
+    const items = generarItemsPagares(c, $('dg-alcance').value);
+    if(!items.length){ alert('No hay cuotas para generar pagarés con ese alcance.'); return; }
+    nuevo.pagares = {generadoEl:ahora, items};
+  }
+  if(hacerCt){
+    const precio = Number($('dg-precio').value), anticipo = Number($('dg-anticipo').value);
+    nuevo.contrato = {
+      generadoEl:ahora, primeraCuota:c.cuotas[0].vence,
+      vehiculo:v('dg-veh'), patente:v('dg-pat'), motor:v('dg-motor'), chasis:v('dg-chasis'),
+      precio: precio>0 ? {monto:precio, moneda:$('dg-precio-mon').value} : null,
+      anticipo: anticipo>0 ? {monto:anticipo, moneda:$('dg-anticipo-mon').value} : null,
+      transferencia: $('dg-transf').value, tramos: tramosDesdeCuotas(c.cuotas)
+    };
+  }
+  c.documentos = nuevo;
+  normCliente(c);
+  guardarCfg({vendedor:cfg.vendedor, vendedorDoc:cfg.vendedorDoc, vendedorDom:cfg.vendedorDom, beneficiario:cfg.beneficiario,
+    lugarPago:cfg.lugarPago, ciudadEmision:cfg.ciudadEmision, ciudadPago:cfg.ciudadPago, valorRecibido:cfg.valorRecibido});
+  guardarDocumentosCliente(c.id);
+  cerrarModal('modalDocs');
+  actualizarTodo();
+  mostrarToast(hacerPag && hacerCt ? `Pagarés y contrato generados (${nuevo.pagares.items.length} pagarés)` : hacerPag ? `${nuevo.pagares.items.length} pagarés generados` : 'Contrato generado');
+  abrirDoc(c.id, hacerPag ? 'pagares' : 'contrato');
+});
+
+/* ----- visor / impresión ----- */
+let dvCliente = null, dvModo = 'pagares';
+function abrirDoc(clienteId, modo){
+  const c = clienteById(clienteId);
+  if(!c || !c.documentos) return;
+  dvCliente = clienteId;
+  dvModo = (modo==='pagares' && c.documentos.pagares) ? 'pagares' : (c.documentos.contrato ? 'contrato' : 'pagares');
+  $('dv-filtro').value = 'todos';
+  $('docViewer').classList.add('open');
+  document.body.classList.add('viendo-doc');
+  dvRender();
+}
+function dvSetModo(m){ dvModo = m; dvRender(); }
+function dvRender(){
+  const c = clienteById(dvCliente);
+  if(!c || !c.documentos){ cerrarDoc(); return; }
+  const d = c.documentos;
+  $('dv-tab-pagares').disabled = !d.pagares;
+  $('dv-tab-contrato').disabled = !d.contrato;
+  $('dv-tab-pagares').classList.toggle('active', dvModo==='pagares');
+  $('dv-tab-contrato').classList.toggle('active', dvModo==='contrato');
+  $('dv-filtro-wrap').style.display = dvModo==='pagares' ? 'inline-flex' : 'none';
+  if(dvModo==='pagares' && d.pagares){
+    const f = $('dv-filtro').value;
+    const estaPagado = it => { const q = c.cuotas.find(x=>x.numero===it.cuota); return !!q && q.estado==='pagada'; };
+    const items = d.pagares.items.filter(it=> f==='todos' || (f==='pagados' ? estaPagado(it) : !estaPagado(it)));
+    const pagados = d.pagares.items.filter(estaPagado).length;
+    $('dv-info').textContent = `${c.nombre} · ${d.pagares.items.length} pagaré${d.pagares.items.length===1?'':'s'} · ${pagados} pagado${pagados===1?'':'s'} · mostrando ${items.length}`;
+    $('dv-contenido').innerHTML = items.length
+      ? items.map(it=>htmlPagare(it, d, c.cuotas.find(x=>x.numero===it.cuota))).join('')
+      : `<div class="dv-vacio">No hay pagarés para ese filtro.</div>`;
+  } else if(d.contrato){
+    $('dv-info').textContent = `${c.nombre} · contrato de compraventa`;
+    $('dv-contenido').innerHTML = htmlContrato(c);
+  }
+}
+function cerrarDoc(){ $('docViewer').classList.remove('open'); document.body.classList.remove('viendo-doc'); dvCliente = null; }
+function imprimirDoc(){ window.print(); }
+$('dv-filtro').addEventListener('change', dvRender);
+$('filtroDocCliente').addEventListener('input', renderDocumentos);
+$('filtroDocEstado').addEventListener('change', renderDocumentos);
+
 /* ---------- alta de unidad ---------- */
 document.getElementById('formVehiculo').addEventListener('submit', e=>{
   e.preventDefault();
-  const unidad = document.getElementById('fv-unidad').value.trim();
+  const unidad = up(document.getElementById('fv-unidad').value.trim());
   const anio = Number(document.getElementById('fv-anio').value);
-  const patente = document.getElementById('fv-patente').value.trim() || '—';
+  const patente = up(document.getElementById('fv-patente').value.trim()) || '—';
   const precioCompra = Number(document.getElementById('fv-compra').value);
   const costos = Number(document.getElementById('fv-costos').value) || 0;
   const precioVenta = Number(document.getElementById('fv-venta').value);
@@ -1705,7 +2561,7 @@ document.getElementById('formVehiculo').addEventListener('submit', e=>{
   }
 });
 
-/* ---------- persistencia de cuotas (marcar pagada / deshacer) ---------- */
+/* ---------- persistencia (pagos, documentos) ---------- */
 function guardarCuotasCliente(clienteId){
   if(MODO_DEMO) return;
   const cliente = clienteById(clienteId);
@@ -1716,9 +2572,21 @@ function guardarCuotasCliente(clienteId){
     alert('Error al guardar el pago: ' + err.message);
   });
 }
+function guardarDocumentosCliente(clienteId){
+  if(MODO_DEMO) return;
+  const cliente = clienteById(clienteId);
+  if(!cliente) return;
+  db.collection('yam_clientes').doc(clienteId).update({
+    documentos: docsAFirestore(cliente.documentos)
+  }).catch(err=>{
+    alert('Error al guardar los documentos: ' + err.message);
+  });
+}
 
 function actualizarTodo(){
   renderStats();
+  poblarDashMes();
+  renderCobrados();
   renderProximos();
   renderClientes();
   poblarFiltroMes();
@@ -1726,6 +2594,8 @@ function actualizarTodo(){
   poblarFiltroMesVenta();
   renderVehiculos();
   renderPlan();
+  renderDocumentos();
+  if(dvCliente) dvRender();
 }
 
 /* ---------- navegación entre secciones ---------- */
@@ -1762,11 +2632,12 @@ function suscribirDatos(){
     .onSnapshot(snap=>{
       clientes = snap.docs.map(doc=>{
         const d = doc.data();
-        return {
+        return normCliente({
           id: doc.id, nombre:d.nombre, dni:d.dni, telefono:d.telefono,
           vehiculo:d.vehiculo, patente:d.patente, financiacion:d.financiacion || '',
-          cuotas: cuotasDesdeFirestore(d.cuotas)
-        };
+          cuotas: cuotasDesdeFirestore(d.cuotas),
+          documentos: docsDesdeFirestore(d.documentos)
+        });
       });
       ordenarClientes();
       actualizarTodo();
@@ -1779,12 +2650,12 @@ function suscribirDatos(){
     .onSnapshot(snap=>{
       vehiculosInventario = snap.docs.map(doc=>{
         const d = doc.data();
-        return {
+        return normVehiculo({
           id: doc.id, unidad:d.unidad, anio:d.anio, patente:d.patente,
           precioCompra:d.precioCompra, costos:d.costos, precioVenta:d.precioVenta,
           estado:d.estado, cliente:d.cliente,
           fechaVenta: d.fechaVenta ? (d.fechaVenta.toDate ? d.fechaVenta.toDate() : new Date(d.fechaVenta)) : null
-        };
+        });
       });
       actualizarTodo();
     }, err=>{
@@ -1795,18 +2666,20 @@ function suscribirDatos(){
 
 function poblarSelectsFinanciacion(){
   const opts = FINANCIACIONES.map(f=>`<option value="${f}">${f}</option>`).join('');
-  document.getElementById('fc-financiacion').innerHTML = '<option value="" disabled selected>Seleccionar...</option>' + opts;
-  document.getElementById('filtroFinanciacion').innerHTML =
-    '<option value="todas">Todas</option>' + opts + '<option value="sin">Sin asignar</option>';
+  $('fc-financiacion').innerHTML = '<option value="" disabled selected>Seleccionar...</option>' + opts;
+  $('filtroFinanciacion').innerHTML = '<option value="todas">Todas</option>' + opts + '<option value="sin">Sin asignar</option>';
+  $('dashFin').innerHTML = '<option value="todas">Todas</option>' + opts + '<option value="sin">Sin asignar</option>';
 }
 poblarSelectsFinanciacion();
-document.getElementById('filtroFinanciacion').addEventListener('change', renderClientes);
+$('filtroFinanciacion').addEventListener('change', renderClientes);
+$('dashFin').addEventListener('change', ()=>{ renderCobrados(); renderProximos(); });
+$('dashMes').addEventListener('change', renderCobrados);
 
 if(MODO_DEMO){
-  document.getElementById('demoBanner').style.display = 'block';
-  clientes = clientesSeedFn().map((c,i)=>({...c, id:nuevoIdLocal(), financiacion:FINANCIACIONES[i % FINANCIACIONES.length]}));
+  $('demoBanner').style.display = 'block';
+  clientes = clientesSeedFn().map((c,i)=>normCliente({...c, id:nuevoIdLocal(), financiacion:FINANCIACIONES[i % FINANCIACIONES.length], documentos:null}));
   ordenarClientes();
-  vehiculosInventario = vehiculosSeed.slice();
+  vehiculosInventario = vehiculosSeed.map(v=>normVehiculo({...v}));
   iniciarApp();
 } else {
   firebase.auth().onAuthStateChanged(user=>{
@@ -1814,20 +2687,20 @@ if(MODO_DEMO){
       suscribirDatos();
       iniciarApp();
     } else {
-      document.getElementById('loginScreen').classList.remove('hidden');
-      document.getElementById('appRoot').classList.remove('ready');
+      $('loginScreen').classList.remove('hidden');
+      $('appRoot').classList.remove('ready');
       if(unsubClientes) unsubClientes();
       if(unsubVehiculos) unsubVehiculos();
     }
   });
 
-  document.getElementById('formLogin').addEventListener('submit', e=>{
+  $('formLogin').addEventListener('submit', e=>{
     e.preventDefault();
-    const email = document.getElementById('login-email').value.trim();
-    const pass = document.getElementById('login-pass').value;
-    document.getElementById('loginError').style.display = 'none';
+    const email = $('login-email').value.trim();
+    const pass = $('login-pass').value;
+    $('loginError').style.display = 'none';
     firebase.auth().signInWithEmailAndPassword(email, pass).catch(()=>{
-      document.getElementById('loginError').style.display = 'block';
+      $('loginError').style.display = 'block';
     });
   });
 }
