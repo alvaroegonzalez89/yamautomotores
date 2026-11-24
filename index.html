@@ -476,6 +476,16 @@
     body.viendo-doc .pg-sello{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
     body.viendo-doc .contrato{padding:0 !important; font-size:11pt;}
   }
+  /* marca de agua del contrato */
+  .contrato{position:relative; overflow:hidden;}
+  .ct-marca{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; z-index:0;}
+  .ct-marca img{width:62%; max-width:520px; opacity:.08; filter:grayscale(1);}
+  .contrato > *:not(.ct-marca){position:relative; z-index:1;}
+  @media print{
+    body.viendo-doc .contrato{overflow:visible;}
+    body.viendo-doc .ct-marca{position:fixed; inset:0;}
+    body.viendo-doc .ct-marca img{width:125mm; max-width:none; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  }
 </style>
 </head>
 <body>
@@ -1378,7 +1388,7 @@ function htmlPagare(item, doc, cuota){
 }
 
 /* ---------- contrato de compraventa (modelo base: revisar con abogado/escribano) ---------- */
-function htmlContrato(cliente){
+function htmlContrato(cliente, marca){
   const d = cliente.documentos, cfg = d.config, ct = d.contrato;
   const comp = (d.firmantes||[]).filter(x=>x.nombre);
   const fe = cfg.fechaEmision;
@@ -1406,6 +1416,7 @@ function htmlContrato(cliente){
   ];
   const bloqueFirma = (rol, nombre, dni) => `<div class="ct-firma"><div class="ct-linea"></div><b>${rol}</b><div>${esc(nombre||'')}</div><div>D.N.I. ${esc(dni||'')}</div></div>`;
   return `<div class="contrato">
+    ${marca ? `<div class="ct-marca"><img src="${marca}" alt=""></div>` : ''}
     <h1>BOLETO DE COMPRAVENTA DE AUTOMOTOR</h1>
     <p>En ${esc(cfg.ciudadEmision)}, a los ${fe.getDate()} días del mes de ${MESES_UP[fe.getMonth()].toLowerCase()} de ${fe.getFullYear()}, entre <b>${esc(cfg.vendedor)}</b>${cfg.vendedorDoc ? ', ' + esc(cfg.vendedorDoc) : ''}, con domicilio en ${esc(cfg.vendedorDom || '____________')}, en adelante “EL VENDEDOR”, por una parte; y ${comp.map(persona).join('; y ')}, en adelante “${rolC}”, por la otra parte, convienen en celebrar el presente boleto de compraventa, que se rige por las siguientes cláusulas:</p>
     ${clausulas.map(([t,x])=>`<p><b>${t}.</b> ${x}</p>`).join('')}
@@ -1527,6 +1538,31 @@ function obtenerLogoChico(){
     };
     img.onerror = ()=>resolve(null);
     setTimeout(()=>resolve(null), 2000);
+    img.src = el.src;
+  });
+}
+
+/* logo para la marca de agua del contrato (redondo y transparente, generado desde el logo del panel) */
+let logoMarcaCache = null;
+function obtenerLogoMarca(){
+  if(logoMarcaCache) return Promise.resolve(logoMarcaCache);
+  return new Promise(resolve=>{
+    const el = document.querySelector('nav .brand img');
+    if(!el){ resolve(null); return; }
+    const img = new Image();
+    img.onload = ()=>{
+      try{
+        const S = 600;
+        const cv = document.createElement('canvas'); cv.width = S; cv.height = S;
+        const ctx = cv.getContext('2d');
+        ctx.beginPath(); ctx.arc(S/2, S/2, S/2, 0, Math.PI*2); ctx.closePath(); ctx.clip();
+        ctx.drawImage(img, 0, 0, S, S);
+        logoMarcaCache = cv.toDataURL('image/png');
+        resolve(logoMarcaCache);
+      }catch(e){ resolve(null); }
+    };
+    img.onerror = ()=>resolve(null);
+    setTimeout(()=>resolve(null), 2500);
     img.src = el.src;
   });
 }
@@ -2517,11 +2553,18 @@ function dvRender(){
       : `<div class="dv-vacio">No hay pagarés para ese filtro.</div>`;
   } else if(d.contrato){
     $('dv-info').textContent = `${c.nombre} · contrato de compraventa`;
-    $('dv-contenido').innerHTML = htmlContrato(c);
+    $('dv-contenido').innerHTML = htmlContrato(c, logoMarcaCache);
+    if(!logoMarcaCache){
+      const idc = c.id;
+      obtenerLogoMarca().then(src=>{ if(src && dvCliente===idc && dvModo==='contrato') dvRender(); });
+    }
   }
 }
 function cerrarDoc(){ $('docViewer').classList.remove('open'); document.body.classList.remove('viendo-doc'); dvCliente = null; }
-function imprimirDoc(){ window.print(); }
+async function imprimirDoc(){
+  if(dvModo==='contrato' && !logoMarcaCache){ await obtenerLogoMarca(); dvRender(); }
+  window.print();
+}
 $('dv-filtro').addEventListener('change', dvRender);
 $('filtroDocCliente').addEventListener('input', renderDocumentos);
 $('filtroDocEstado').addEventListener('change', renderDocumentos);
